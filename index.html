@@ -1901,22 +1901,23 @@
       .map(i => i.value || '');
   }
 
-  /* ── Envio genérico via fetch (no-cors para evitar bloqueio CORS do GitHub Pages) ── */
+  /* ── Envio genérico via fetch ── */
   async function enviarParaSheets(payload, btnEl, labelFicha) {
     const original = btnEl.textContent;
     btnEl.textContent = 'Enviando…';
     btnEl.disabled = true;
 
     try {
-      // Usa no-cors: o Apps Script responde mas o browser não lê a resposta —
-      // isso é normal e suficiente para gravar na planilha.
-      await fetch(APPS_SCRIPT_URL, {
+      const response = await fetch(APPS_SCRIPT_URL, {
         method: 'POST',
-        mode: 'no-cors',
         headers: { 'Content-Type': 'text/plain' },
         body: JSON.stringify(payload),
       });
-      alert(`✅ ${labelFicha} registrada na planilha com sucesso!`);
+      if (response.ok) {
+        alert(`✅ ${labelFicha} registrada na planilha com sucesso!`);
+      } else {
+        throw new Error('HTTP ' + response.status);
+      }
     } catch (err) {
       console.error(err);
       alert(`❌ Erro ao enviar ${labelFicha}. Verifique a URL do Apps Script e a conexão.`);
