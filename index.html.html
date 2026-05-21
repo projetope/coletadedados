@@ -1,0 +1,1881 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CT Vascular UERJ — Plataforma de Pesquisa</title>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --blue:        #0C2D6B;
+      --blue-mid:    #1A4FA0;
+      --blue-pale:   #EBF1FB;
+      --blue-border: #C8D8F0;
+      --ink:         #0F172A;
+      --ink-mid:     #475569;
+      --ink-faint:   #94A3B8;
+      --surface:     #F8FAFD;
+      --card:        #FFFFFF;
+      --border:      #E2E8F4;
+      --mono:        'Geist Mono', monospace;
+      --sans:        'Geist', sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--sans);
+      background: var(--surface);
+      color: var(--ink);
+      min-height: 100vh;
+    }
+
+    /* ── HIDDEN UTILITY ── */
+    .hidden { display: none !important; }
+
+    /* ═══════════════════════════════════════════
+       LOGIN SCREEN
+    ═══════════════════════════════════════════ */
+    #login-screen {
+      position: fixed;
+      inset: 0;
+      background: var(--surface);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 1.5rem;
+    }
+    .login-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 420px;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(12,45,107,.08);
+    }
+    .login-header {
+      background: var(--blue);
+      padding: 2.25rem 2.5rem 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .login-header::before {
+      content: '';
+      position: absolute;
+      top: -50px; right: -50px;
+      width: 180px; height: 180px;
+      border-radius: 50%;
+      border: 35px solid rgba(255,255,255,.04);
+      pointer-events: none;
+    }
+    .login-header::after {
+      content: '';
+      position: absolute;
+      bottom: -30px; right: 60px;
+      width: 110px; height: 110px;
+      border-radius: 50%;
+      border: 22px solid rgba(255,255,255,.03);
+      pointer-events: none;
+    }
+    .login-eyebrow {
+      font-family: var(--mono);
+      font-size: .58rem;
+      font-weight: 500;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.4);
+      margin-bottom: .5rem;
+    }
+    .login-title {
+      font-family: var(--sans);
+      font-size: 1.55rem;
+      font-weight: 600;
+      color: #fff;
+      letter-spacing: -.02em;
+      line-height: 1.2;
+    }
+    .login-subtitle {
+      font-family: var(--sans);
+      font-size: .75rem;
+      font-weight: 300;
+      color: rgba(255,255,255,.45);
+      margin-top: .4rem;
+      line-height: 1.5;
+    }
+    .login-body {
+      padding: 2rem 2.5rem 2.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.4rem;
+    }
+    .login-field { display: flex; flex-direction: column; gap: .4rem; }
+    .login-field label {
+      font-family: var(--mono);
+      font-size: .58rem;
+      font-weight: 500;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+    }
+    .login-field input {
+      font-family: var(--sans);
+      font-size: .95rem;
+      color: var(--ink);
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface);
+      outline: none;
+      padding: .65rem .9rem;
+      width: 100%;
+      transition: border-color .2s;
+    }
+    .login-field input:focus { border-color: var(--blue-mid); }
+    .login-error {
+      font-family: var(--sans);
+      font-size: .8rem;
+      color: #B91C1C;
+      background: #FEF2F2;
+      border: 1px solid #FECACA;
+      border-radius: 6px;
+      padding: .55rem .85rem;
+      display: none;
+    }
+    .login-error.visible { display: block; }
+    .btn-login {
+      font-family: var(--sans);
+      font-size: .82rem;
+      font-weight: 600;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      background: var(--blue);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: .8rem 1.5rem;
+      cursor: pointer;
+      width: 100%;
+      transition: background .18s;
+    }
+    .btn-login:hover { background: var(--blue-mid); }
+
+    /* ═══════════════════════════════════════════
+       DASHBOARD SCREEN
+    ═══════════════════════════════════════════ */
+    #dashboard-screen {
+      padding: 3rem 1.5rem 5rem;
+    }
+    .dash-wrapper {
+      max-width: 860px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    /* Dashboard header */
+    .dash-header {
+      background: var(--blue);
+      border-radius: 12px;
+      padding: 2.25rem 2.75rem 2rem;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .dash-header::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 240px; height: 240px;
+      border-radius: 50%;
+      border: 40px solid rgba(255,255,255,.04);
+      pointer-events: none;
+    }
+    .dash-header::after {
+      content: '';
+      position: absolute;
+      bottom: -40px; right: 80px;
+      width: 140px; height: 140px;
+      border-radius: 50%;
+      border: 28px solid rgba(255,255,255,.03);
+      pointer-events: none;
+    }
+    .dash-header-left { display: flex; flex-direction: column; gap: .5rem; }
+    .dash-eyebrow {
+      font-family: var(--mono);
+      font-size: .6rem;
+      font-weight: 500;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.45);
+    }
+    .dash-study-title {
+      font-family: var(--sans);
+      font-size: 1rem;
+      font-weight: 400;
+      color: rgba(255,255,255,.9);
+      line-height: 1.5;
+      max-width: 460px;
+    }
+    .dash-inst {
+      font-family: var(--sans);
+      font-size: .72rem;
+      font-weight: 300;
+      color: rgba(255,255,255,.4);
+      margin-top: .25rem;
+      line-height: 1.6;
+    }
+    .dash-header-right { text-align: right; flex-shrink: 0; }
+    .dash-researcher-label {
+      font-family: var(--mono);
+      font-size: .58rem;
+      font-weight: 500;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.4);
+      margin-bottom: .3rem;
+    }
+    .dash-researcher-name {
+      font-family: var(--sans);
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #fff;
+    }
+    .btn-logout {
+      margin-top: .75rem;
+      font-family: var(--mono);
+      font-size: .6rem;
+      font-weight: 500;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      background: rgba(255,255,255,.1);
+      color: rgba(255,255,255,.7);
+      border: 1px solid rgba(255,255,255,.15);
+      border-radius: 6px;
+      padding: .35rem .75rem;
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .btn-logout:hover { background: rgba(255,255,255,.18); color: #fff; }
+
+    /* Dashboard section label */
+    .dash-section-label {
+      font-family: var(--mono);
+      font-size: .65rem;
+      font-weight: 500;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      padding-bottom: .5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* Ficha cards grid */
+    .fichas-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1rem;
+    }
+    .ficha-card {
+      background: var(--card);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: border-color .2s, box-shadow .2s, transform .15s;
+    }
+    .ficha-card:hover {
+      border-color: var(--blue-border);
+      box-shadow: 0 4px 18px rgba(12,45,107,.1);
+      transform: translateY(-2px);
+    }
+    .ficha-card-top {
+      background: var(--blue);
+      padding: 1.5rem 1.75rem 1.25rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .ficha-card-top::before {
+      content: '';
+      position: absolute;
+      top: -30px; right: -30px;
+      width: 120px; height: 120px;
+      border-radius: 50%;
+      border: 22px solid rgba(255,255,255,.05);
+      pointer-events: none;
+    }
+    .ficha-card-num {
+      font-family: var(--mono);
+      font-size: .58rem;
+      font-weight: 500;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.4);
+      margin-bottom: .3rem;
+    }
+    .ficha-card-name {
+      font-family: var(--sans);
+      font-size: 1.35rem;
+      font-weight: 600;
+      color: #fff;
+      letter-spacing: -.02em;
+      line-height: 1.2;
+    }
+    .ficha-card-body {
+      padding: 1.25rem 1.75rem 1.5rem;
+    }
+    .ficha-card-desc {
+      font-family: var(--sans);
+      font-size: .83rem;
+      color: var(--ink-mid);
+      line-height: 1.55;
+      margin-bottom: 1.25rem;
+    }
+    .ficha-card-btn {
+      font-family: var(--sans);
+      font-size: .72rem;
+      font-weight: 600;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      background: var(--blue-pale);
+      color: var(--blue);
+      border: 1.5px solid var(--blue-border);
+      border-radius: 7px;
+      padding: .55rem 1.1rem;
+      cursor: pointer;
+      transition: all .15s;
+      width: 100%;
+    }
+    .ficha-card-btn:hover { background: var(--blue); color: #fff; border-color: var(--blue); }
+
+    /* ═══════════════════════════════════════════
+       FICHA SCREENS (shared wrapper)
+    ═══════════════════════════════════════════ */
+    .ficha-screen {
+      padding: 3rem 1.5rem 6rem;
+    }
+    .wrapper {
+      max-width: 860px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    /* Back button bar */
+    .back-bar {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      margin-bottom: -.25rem;
+    }
+    .btn-back {
+      font-family: var(--mono);
+      font-size: .65rem;
+      font-weight: 500;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      background: var(--card);
+      color: var(--ink-mid);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: .45rem 1rem;
+      cursor: pointer;
+      transition: all .15s;
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+    }
+    .btn-back:hover { border-color: var(--blue); color: var(--blue); }
+    .btn-back::before { content: '←'; }
+
+    /* ── HEADER CARD (fichas) ── */
+    .header-card {
+      background: var(--blue);
+      border-radius: 12px;
+      padding: 2.25rem 2.75rem 2rem;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .header-card::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 240px; height: 240px;
+      border-radius: 50%;
+      border: 40px solid rgba(255,255,255,.04);
+      pointer-events: none;
+    }
+    .header-card::after {
+      content: '';
+      position: absolute;
+      bottom: -40px; right: 80px;
+      width: 140px; height: 140px;
+      border-radius: 50%;
+      border: 28px solid rgba(255,255,255,.03);
+      pointer-events: none;
+    }
+    .header-left { display: flex; flex-direction: column; gap: .5rem; }
+    .header-eyebrow {
+      font-family: var(--mono);
+      font-size: .6rem;
+      font-weight: 500;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.45);
+    }
+    .header-study-title {
+      font-family: var(--sans);
+      font-size: 1rem;
+      font-weight: 400;
+      color: rgba(255,255,255,.9);
+      line-height: 1.5;
+      max-width: 460px;
+    }
+    .header-inst {
+      font-family: var(--sans);
+      font-size: .72rem;
+      font-weight: 300;
+      color: rgba(255,255,255,.4);
+      margin-top: .25rem;
+      line-height: 1.6;
+    }
+    .header-right { text-align: right; flex-shrink: 0; }
+    .ficha-num {
+      font-family: var(--mono);
+      font-size: .6rem;
+      font-weight: 500;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.4);
+      margin-bottom: .2rem;
+    }
+    .ficha-name {
+      font-family: var(--sans);
+      font-size: 1.7rem;
+      font-weight: 600;
+      color: #FFFFFF;
+      line-height: 1.15;
+      letter-spacing: -.02em;
+    }
+
+    /* ── SECTION CARDS ── */
+    .section-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .section-header {
+      padding: 1.1rem 2.25rem;
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--blue-pale);
+    }
+    .section-pip {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--blue);
+      flex-shrink: 0;
+    }
+    .section-label {
+      font-family: var(--sans);
+      font-size: .9rem;
+      font-weight: 600;
+      letter-spacing: .01em;
+      color: var(--blue);
+    }
+    .section-body { padding: .5rem 0; }
+
+    /* ── META / DADOS GERAIS ── */
+    .meta-inner {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
+      gap: 1.25rem 2rem;
+      padding: 1.5rem 2.25rem;
+    }
+    .meta-field { display: flex; flex-direction: column; gap: .35rem; }
+    .meta-field label {
+      font-family: var(--mono);
+      font-size: .58rem;
+      font-weight: 500;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+    }
+    .meta-field input[type="text"],
+    .meta-field input[type="date"],
+    .meta-field input[type="number"] {
+      font-family: var(--mono);
+      font-size: .92rem;
+      color: var(--ink);
+      border: none;
+      outline: none;
+      background: transparent;
+      border-bottom: 1.5px solid var(--border);
+      padding-bottom: .25rem;
+      width: 100%;
+      transition: border-color .2s;
+    }
+    .meta-field input:focus { border-bottom-color: var(--blue-mid); }
+
+    /* Membro / toggle buttons */
+    .mi-toggle {
+      display: flex;
+      gap: .5rem;
+      margin-top: .15rem;
+    }
+    .mi-item {
+      display: flex;
+      align-items: center;
+      gap: .35rem;
+      cursor: pointer;
+      padding: .3rem .75rem;
+      border-radius: 6px;
+      border: 1.5px solid var(--border);
+      background: var(--surface);
+      transition: all .15s;
+      user-select: none;
+    }
+    .mi-item:has(input:checked) { border-color: var(--blue); background: var(--blue-pale); }
+    .mi-item input[type="radio"] { display: none; }
+    .mi-item span {
+      font-family: var(--mono);
+      font-size: .78rem;
+      font-weight: 500;
+      color: var(--ink-mid);
+    }
+    .mi-item:has(input:checked) span { color: var(--blue); }
+
+    /* ── ROWS ── */
+    .row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 1.5rem;
+      padding: .9rem 2.25rem;
+      transition: background .15s;
+    }
+    .row:not(:last-child) { border-bottom: 1px solid var(--border); }
+    .row:hover { background: #F5F8FE; }
+
+    .row-name {
+      font-family: var(--sans);
+      font-size: .9rem;
+      font-weight: 500;
+      color: var(--ink);
+      line-height: 1.45;
+    }
+    .row-name .item-letter {
+      font-family: var(--mono);
+      font-size: .75rem;
+      font-weight: 500;
+      color: var(--blue);
+      margin-right: .5rem;
+    }
+    .row-name .sub {
+      display: block;
+      font-size: .73rem;
+      font-weight: 400;
+      color: var(--ink-faint);
+      margin-top: .15rem;
+    }
+
+    /* radios */
+    .radio-group { display: flex; flex-direction: column; gap: .45rem; }
+    .radio-group.row-group { flex-direction: row; gap: 1.25rem; flex-wrap: wrap; }
+
+    .r-item { display: flex; align-items: center; gap: .5rem; cursor: pointer; }
+    .r-item input[type="radio"] {
+      appearance: none;
+      width: 17px; height: 17px;
+      border: 2px solid #BDC9E0;
+      border-radius: 50%;
+      background: var(--card);
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: border-color .15s, background .15s;
+      position: relative;
+    }
+    .r-item input[type="radio"]:hover { border-color: var(--blue-mid); }
+    .r-item input[type="radio"]:checked { border-color: var(--blue); background: var(--blue); }
+    .r-item input[type="radio"]:checked::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle, white 35%, transparent 36%);
+    }
+    .r-item span {
+      font-family: var(--sans);
+      font-size: .85rem;
+      color: var(--ink-mid);
+      user-select: none;
+    }
+
+    /* checkboxes */
+    .c-item { display: flex; align-items: center; gap: .5rem; cursor: pointer; }
+    .c-item input[type="checkbox"] {
+      appearance: none;
+      width: 17px; height: 17px;
+      border: 2px solid #BDC9E0;
+      border-radius: 4px;
+      background: var(--card);
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: border-color .15s, background .15s;
+      position: relative;
+    }
+    .c-item input[type="checkbox"]:hover { border-color: var(--blue-mid); }
+    .c-item input[type="checkbox"]:checked { border-color: var(--blue); background: var(--blue); }
+    .c-item input[type="checkbox"]:checked::after {
+      content: '';
+      position: absolute;
+      inset: 2px;
+      background: url("data:image/svg+xml,%3Csvg viewBox='0 0 10 8' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 4l3 3 5-6' stroke='white' stroke-width='1.8' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;
+    }
+    .c-item span {
+      font-family: var(--sans);
+      font-size: .85rem;
+      color: var(--ink-mid);
+      user-select: none;
+    }
+
+    /* checkbox grid */
+    .check-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .6rem 1.5rem;
+      padding: 1.1rem 2.25rem;
+    }
+
+    /* inline text field */
+    .field-inline {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      flex-wrap: wrap;
+    }
+    .field-inline input[type="text"],
+    .field-inline input[type="number"] {
+      font-family: var(--mono);
+      font-size: .9rem;
+      border: none;
+      border-bottom: 1.5px solid var(--border);
+      background: transparent;
+      outline: none;
+      padding: .1rem .2rem .25rem;
+      color: var(--ink);
+      transition: border-color .2s;
+    }
+    .field-inline input[type="number"] { width: 70px; text-align: center; }
+    .field-inline input[type="text"] { width: 200px; }
+    .field-inline input:focus { border-bottom-color: var(--blue-mid); }
+    .field-inline .unit {
+      font-family: var(--mono);
+      font-size: .65rem;
+      color: var(--ink-faint);
+      white-space: nowrap;
+    }
+
+    /* elegibility result banner */
+    .elegib-row {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      padding: 1rem 2.25rem;
+      background: var(--blue-pale);
+      border-top: 1px solid var(--blue-border);
+      flex-wrap: wrap;
+    }
+    .elegib-label {
+      font-family: var(--sans);
+      font-size: .88rem;
+      font-weight: 600;
+      color: var(--blue);
+    }
+    .elegib-motivo {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      flex: 1;
+      min-width: 200px;
+    }
+    .elegib-motivo span {
+      font-family: var(--mono);
+      font-size: .65rem;
+      color: var(--ink-faint);
+      white-space: nowrap;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+    .elegib-motivo input[type="text"] {
+      font-family: var(--mono);
+      font-size: .88rem;
+      border: none;
+      border-bottom: 1.5px solid var(--blue-border);
+      background: transparent;
+      outline: none;
+      padding: .1rem .2rem .25rem;
+      color: var(--ink);
+      flex: 1;
+      transition: border-color .2s;
+    }
+    .elegib-motivo input:focus { border-bottom-color: var(--blue); }
+
+    /* VCSS table */
+    .vcss-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .vcss-table thead tr {
+      background: var(--blue-pale);
+      border-bottom: 2px solid var(--blue-border);
+    }
+    .vcss-table thead th {
+      font-family: var(--mono);
+      font-size: .65rem;
+      font-weight: 500;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--blue);
+      padding: .75rem 2.25rem;
+      text-align: left;
+    }
+    .vcss-table thead th:last-child { text-align: center; width: 160px; }
+    .vcss-table tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background .15s;
+    }
+    .vcss-table tbody tr:last-child { border-bottom: none; }
+    .vcss-table tbody tr:hover { background: #F5F8FE; }
+    .vcss-table tbody tr.total-row { background: var(--blue-pale); }
+    .vcss-table tbody tr.total-row:hover { background: #dce8f8; }
+    .vcss-table tbody td {
+      padding: .8rem 2.25rem;
+      font-family: var(--sans);
+      font-size: .9rem;
+      font-weight: 500;
+      color: var(--ink);
+    }
+    .vcss-table tbody td:last-child { text-align: center; }
+    .vcss-table tbody td input[type="number"] {
+      font-family: var(--mono);
+      font-size: .9rem;
+      width: 80px;
+      border: none;
+      border-bottom: 1.5px solid var(--border);
+      background: transparent;
+      outline: none;
+      padding: .1rem .2rem;
+      text-align: center;
+      color: var(--ink);
+      transition: border-color .2s;
+    }
+    .vcss-table tbody td input:focus { border-bottom-color: var(--blue-mid); }
+    .vcss-table tbody tr.total-row td { font-weight: 600; color: var(--blue); }
+    .vcss-table tbody tr.total-row td input { font-weight: 600; color: var(--blue); border-bottom-color: var(--blue-border); }
+    .vcss-hint {
+      font-family: var(--mono);
+      font-size: .6rem;
+      color: var(--ink-faint);
+      display: block;
+      margin-top: .15rem;
+    }
+
+    /* dados gerais extra row */
+    .dg-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 1.25rem 2rem;
+      padding: 0 2.25rem 1.5rem;
+    }
+
+    /* ── FOOTER ── */
+    .footer-row {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: .75rem;
+      padding-top: .25rem;
+    }
+    .btn {
+      font-family: var(--sans);
+      font-size: .72rem;
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      padding: .65rem 1.6rem;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      transition: all .18s;
+    }
+    .btn-ghost { background: var(--card); color: var(--ink-mid); border: 1px solid var(--border); }
+    .btn-ghost:hover { border-color: var(--ink-mid); color: var(--ink); }
+    .btn-primary { background: var(--blue); color: #fff; }
+    .btn-primary:hover { background: var(--blue-mid); }
+    .btn-pdf { background: #F0F4FF; color: var(--blue); border: 1.5px solid var(--blue-border); }
+    .btn-pdf:hover { background: var(--blue-pale); }
+
+    /* ── FICHA 02 — param table ── */
+    .param-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .param-table thead tr {
+      background: var(--blue-pale);
+      border-bottom: 2px solid var(--blue-border);
+    }
+    .param-table thead th {
+      font-family: var(--mono);
+      font-size: .65rem;
+      font-weight: 500;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--blue);
+      padding: .75rem 2.25rem;
+      text-align: left;
+    }
+    .param-table thead th:last-child { text-align: center; width: 200px; }
+    .param-table tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background .15s;
+    }
+    .param-table tbody tr:last-child { border-bottom: none; }
+    .param-table tbody tr:hover { background: #F5F8FE; }
+    .param-table tbody td {
+      padding: .85rem 2.25rem;
+      font-family: var(--sans);
+      font-size: .92rem;
+      font-weight: 500;
+      color: var(--ink);
+    }
+    .param-table tbody td .sub {
+      display: block;
+      font-size: .72rem;
+      font-weight: 400;
+      color: var(--ink-faint);
+      margin-top: .1rem;
+    }
+    .param-table tbody td:last-child { text-align: center; }
+    .param-table tbody td input[type="text"] {
+      font-family: var(--mono);
+      font-size: .9rem;
+      width: 120px;
+      border: none;
+      border-bottom: 1.5px solid var(--border);
+      background: transparent;
+      outline: none;
+      padding: .1rem .2rem;
+      text-align: center;
+      color: var(--ink);
+      transition: border-color .2s;
+    }
+    .param-table tbody td input:focus { border-bottom-color: var(--blue-mid); }
+    .param-unit {
+      font-family: var(--mono);
+      font-size: .62rem;
+      color: var(--ink-faint);
+      display: block;
+      margin-top: .2rem;
+    }
+
+    /* ── FICHA 03 — rows / measures ── */
+    .row.f3-row {
+      grid-template-columns: 220px 1fr 180px;
+    }
+    .row.two-col {
+      grid-template-columns: 260px 1fr;
+    }
+    .measures { display: flex; flex-direction: column; gap: .55rem; }
+    .measure { display: flex; align-items: center; gap: .6rem; }
+    .measure .mlabel {
+      font-family: var(--mono);
+      font-size: .68rem;
+      color: var(--ink-mid);
+      white-space: nowrap;
+      min-width: 150px;
+    }
+    .measure input[type="text"] {
+      font-family: var(--mono);
+      font-size: .9rem;
+      width: 64px;
+      border: none;
+      border-bottom: 1.5px solid var(--border);
+      background: transparent;
+      outline: none;
+      padding: .1rem .2rem;
+      text-align: center;
+      color: var(--ink);
+      transition: border-color .2s;
+    }
+    .measure input:focus { border-bottom-color: var(--blue-mid); }
+    .measure .unit {
+      font-family: var(--mono);
+      font-size: .65rem;
+      color: var(--ink-faint);
+    }
+    /* ficha02 field-inline text width override */
+    #ficha02-screen .field-inline input[type="text"] { max-width: 340px; }
+
+    @media print {
+      body { background: white; }
+      .back-bar, .footer-row, #login-screen, #dashboard-screen { display: none !important; }
+      .ficha-screen { padding: 0; }
+    }
+    @media (max-width: 640px) {
+      .dash-header { flex-direction: column; align-items: flex-start; }
+      .dash-header-right { text-align: left; }
+      .header-card { flex-direction: column; align-items: flex-start; }
+      .header-right { text-align: left; }
+      .meta-inner, .dg-row { padding: 1.25rem; }
+      .row { padding: .9rem 1.25rem; }
+      .row.f3-row, .row.two-col { grid-template-columns: 1fr; }
+      .section-header { padding: 1rem 1.25rem; }
+      .check-grid { padding: 1rem 1.25rem; }
+      .vcss-table thead th, .vcss-table tbody td { padding: .75rem 1.25rem; }
+      .param-table thead th, .param-table tbody td { padding: .75rem 1.25rem; }
+      .fichas-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     LOGIN SCREEN
+═══════════════════════════════════════════ -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-header">
+      <div class="login-eyebrow">CT Vascular UERJ</div>
+      <div class="login-title">Plataforma de Pesquisa</div>
+      <div class="login-subtitle">Impacto das Alterações Morfofuncionais do Pé/Tornozelo na Gravidade da DVC</div>
+    </div>
+    <div class="login-body">
+      <div class="login-field">
+        <label>Nome do Pesquisador</label>
+        <input type="text" id="login-name" placeholder="Digite seu nome completo" autocomplete="off"/>
+      </div>
+      <div class="login-field">
+        <label>Senha</label>
+        <input type="password" id="login-password" placeholder="••••••••" autocomplete="off"/>
+      </div>
+      <div class="login-error" id="login-error">Senha incorreta. Tente novamente.</div>
+      <button class="btn-login" id="btn-entrar">Entrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     DASHBOARD SCREEN
+═══════════════════════════════════════════ -->
+<div id="dashboard-screen" class="hidden">
+  <div class="dash-wrapper">
+
+    <div class="dash-header">
+      <div class="dash-header-left">
+        <span class="dash-eyebrow">Título do Estudo</span>
+        <div class="dash-study-title">Impacto das Alterações Morfofuncionais do Pé/Tornozelo na Gravidade da Doença Venosa Crônica</div>
+        <div class="dash-inst">
+          Universidade do Estado do Rio de Janeiro · Hospital Universitário Pedro Ernesto<br/>
+          UDA de Cirurgia Vascular e Endovascular — CT Vascular UERJ
+        </div>
+      </div>
+      <div class="dash-header-right">
+        <div class="dash-researcher-label">Pesquisador</div>
+        <div class="dash-researcher-name" id="dash-researcher-name">—</div>
+        <button class="btn-logout" id="btn-logout">Sair</button>
+      </div>
+    </div>
+
+    <div>
+      <div class="dash-section-label">Selecione a ficha a preencher</div>
+    </div>
+
+    <div class="fichas-grid">
+
+      <div class="ficha-card" onclick="showFicha('ficha01')">
+        <div class="ficha-card-top">
+          <div class="ficha-card-num">Ficha 01</div>
+          <div class="ficha-card-name">Dados Clínicos</div>
+        </div>
+        <div class="ficha-card-body">
+          <div class="ficha-card-desc">Elegibilidade, comorbidades, sintomas, exame do pé/tornozelo, exame físico venoso e VCSS.</div>
+          <button class="ficha-card-btn">Abrir Ficha 01</button>
+        </div>
+      </div>
+
+      <div class="ficha-card" onclick="showFicha('ficha02')">
+        <div class="ficha-card-top">
+          <div class="ficha-card-num">Ficha 02</div>
+          <div class="ficha-card-name">Fotopletismografia</div>
+        </div>
+        <div class="ficha-card-body">
+          <div class="ficha-card-desc">Parâmetros quantitativos do exame D-PPG: VRT, Half Amplitude, Initial Inflow, Venous Pump Power e VRS.</div>
+          <button class="ficha-card-btn">Abrir Ficha 02</button>
+        </div>
+      </div>
+
+      <div class="ficha-card" onclick="showFicha('ficha03')">
+        <div class="ficha-card-top">
+          <div class="ficha-card-num">Ficha 03</div>
+          <div class="ficha-card-name">Eco&#8209;Doppler</div>
+        </div>
+        <div class="ficha-card-body">
+          <div class="ficha-card-desc">Sistema venoso superficial e profundo: diâmetros, refluxo, obstrução e perfurantes insuficientes.</div>
+          <button class="ficha-card-btn">Abrir Ficha 03</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     FICHA 01 — DADOS CLÍNICOS
+═══════════════════════════════════════════ -->
+<div id="ficha01-screen" class="ficha-screen hidden">
+<div class="wrapper">
+
+  <div class="back-bar">
+    <button class="btn-back" onclick="showDashboard()">Voltar ao painel</button>
+  </div>
+
+  <div class="header-card">
+    <div class="header-left">
+      <span class="header-eyebrow">Título do Estudo</span>
+      <div class="header-study-title">Impacto das Alterações Morfofuncionais do Pé/Tornozelo na Gravidade da Doença Venosa Crônica</div>
+      <div class="header-inst">
+        Universidade do Estado do Rio de Janeiro · Hospital Universitário Pedro Ernesto<br/>
+        UDA de Cirurgia Vascular e Endovascular — CT Vascular UERJ
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="ficha-num">Ficha 01</div>
+      <div class="ficha-name">Dados Clínicos</div>
+    </div>
+  </div>
+
+  <!-- DADOS GERAIS -->
+  <div class="section-card">
+    <div class="section-header"><div class="section-pip"></div><span class="section-label">Dados Gerais</span></div>
+    <div class="section-body">
+      <div class="meta-inner">
+        <div class="meta-field">
+          <label>Pesquisador</label>
+          <input type="text" id="f1-researcher-name" placeholder="—" readonly style="color: var(--blue); font-weight:500;"/>
+        </div>
+        <div class="meta-field">
+          <label>Código do Participante</label>
+          <input type="text" placeholder="Ex.: 2024-001"/>
+        </div>
+        <div class="meta-field">
+          <label>Data da Visita</label>
+          <input type="date"/>
+        </div>
+        <div class="meta-field">
+          <label>Data de Nascimento</label>
+          <input type="date"/>
+        </div>
+        <div class="meta-field">
+          <label>Membro Inferior</label>
+          <div class="mi-toggle">
+            <label class="mi-item"><input type="radio" name="f1-membro" value="Direito"/><span>Direito</span></label>
+            <label class="mi-item"><input type="radio" name="f1-membro" value="Esquerdo"/><span>Esquerdo</span></label>
+          </div>
+        </div>
+      </div>
+      <div class="dg-row">
+        <div class="meta-field">
+          <label>Idade</label>
+          <input type="number" placeholder="—" min="0" max="120"/>
+        </div>
+        <div class="meta-field">
+          <label>Sexo</label>
+          <div class="mi-toggle">
+            <label class="mi-item"><input type="radio" name="f1-sexo" value="M"/><span>M</span></label>
+            <label class="mi-item"><input type="radio" name="f1-sexo" value="F"/><span>F</span></label>
+          </div>
+        </div>
+        <div class="meta-field">
+          <label>Altura</label>
+          <input type="text" id="f1-input-altura" placeholder="cm"/>
+        </div>
+        <div class="meta-field">
+          <label>Peso</label>
+          <input type="text" id="f1-input-peso" placeholder="kg"/>
+        </div>
+        <div class="meta-field">
+          <label>IMC</label>
+          <input type="text" id="f1-input-imc" placeholder="kg/m²" readonly style="color: var(--blue); font-weight: 500;"/>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ELEGIBILIDADE — INCLUSÃO -->
+  <div class="section-card">
+    <div class="section-header"><div class="section-pip"></div><span class="section-label">Checklist de Elegibilidade — Inclusão</span></div>
+    <div class="section-body">
+      <div class="row">
+        <div class="row-name"><span class="item-letter">a.</span>Diagnóstico de DVC CEAP C2–C5 confirmado pelo exame clínico</div>
+        <div class="radio-group row-group">
+          <label class="r-item"><input type="radio" name="f1-inc_a"/><span>Sim</span></label>
+          <label class="r-item"><input type="radio" name="f1-inc_a"/><span>Não</span></label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="row-name"><span class="item-letter">b.</span>Idade a partir de 18 anos</div>
+        <div class="radio-group row-group">
+          <label class="r-item"><input type="radio" name="f1-inc_b"/><span>Sim</span></label>
+          <label class="r-item"><input type="radio" name="f1-inc_b"/><span>Não</span></label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="row-name"><span class="item-letter">c.</span>Capacidade de deambular e realizar testes ativos do pé</div>
+        <div class="radio-group row-group">
+          <label class="r-item"><input type="radio" name="f1-inc_c"/><span>Sim</span></label>
+          <label class="r-item"><input type="radio" name="f1-inc_c"/><span>Não</span></label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="row-name"><span class="item-letter">d.</span>Assinatura do TCLE</div>
+        <div class="radio-group row-group">
+          <label class="r-item"><input type="radio" name="f1-inc_d"/><span>Sim</span></label>
+          <label class="r-item"><input type="radio" name="f1-inc_d"/><span>Não</span></label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ELEGIBILIDADE — EXCLUSÃO -->
+  <div class="section-card">
+    <div class="section-header"><div class="section-pip"></div><span class="section-label">Checklist de Elegibilidade — Exclusão</span></div>
+    <div class="section-body">
+      <div class="row">
+        <div class="row-name"><span class="item-letter">a.</span>Arteriopatia periférica grave<span class="sub">Ausência de pulsos palpáveis e/ou Índice Tornozelo-Braquial &lt;0,9</span></div>
+        <div class="radio-group row-group">
+          <label class="r-item"><input type="radio" name="f1-exc_a"/><span>Sim</span></label>
+          <label class="r-item"><input type="radio" name="f1-exc_a"/><span>Não</span></label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="row-name"><span class="item-letter">b.</span>Neuropatia sensorial grave<span class="sub">Perda de sensibilidade tátil nos pés</span></div>
+        <div class="radio-group row-group">
+          <label class="r-item"><input type="radio" name="f1-exc_b"/><span>Sim</span></label>
+          <label class="r-item"><input type="radio" name="f1-exc_b"/><span>Não</span></label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="row-name"><span class="item-letter">c.</span>Imobilidade ou deformidades graves pós-cirúrgicas no pé/tornozelo</div>
+        <div class="radio-group row-group">
+          <label class="r-item"><input type="radio" name="f1-exc_c"/><span>Sim</span></label>
+          <label class="r-item"><input type="radio" name="f1-exc_c"/><span>Não</span></label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="row-name"><span class="item-letter">d.</span>Trombose venosa profunda aguda ou crônica<span class="sub">Identificada pelo eco-Doppler</span></div>
+        <div class="radio-group row-group">
+          <label class="r-item"><input type="radio" name="f1-exc_d"/><span>Sim</span></label>
+          <label class="r-item"><input type="radio" name="f1-exc_d"/><span>Não</span></label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="row-name"><span class="item-letter">e.</span>Diagnóstico de síndrome pós-flebítica</div>
+        <div class="radio-group row-group">
+          <label class="r-item"><input type="radio" name="f1-exc_e"/><span>Sim</span></label>
+          <label class="r-item"><input type="radio" name="f1-exc_e"/><span>Não</span></label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="row-name"><span class="item-letter">f.</span>Cirurgia venosa recente <span class="sub">&lt;3 meses</span></div>
+        <div class="radio-group row-group">
+          <label class="r-item"><input type="radio" name="f1-exc_f"/><span>Sim</span></label>
+          <label class="r-item"><input type="radio" name="f1-exc_f"/><span>Não</span></label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="row-name"><span class="item-letter">g.</span>Úlcera venosa ativa <span class="sub">Paciente C6</span></div>
+        <div class="radio-group row-group">
+          <label class="r-item"><input type="radio" name="f1-exc_g"/><span>Sim</span></label>
+          <label class="r-item"><input type="radio" name="f1-exc_g"/><span>Não</span></label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="row-name"><span class="item-letter">h.</span>Diagnóstico de DVC CEAP C0–C1</div>
+        <div class="radio-group row-group">
+          <label class="r-item"><input type="radio" name="f1-exc_h"/><span>Sim</span></label>
+          <label class="r-item"><input type="radio" name="f1-exc_h"/><span>Não</span></label>
+        </div>
+      </div>
+      <div class="elegib-row">
+        <span class="elegib-label">Participante Elegível?</span>
+        <div class="radio-group row-group">
+          <label class="r-item"><input type="radio" name="f1-elegivel"/><span>Sim</span></label>
+          <label class="r-item"><input type="radio" name="f1-elegivel"/><span>Não</span></label>
+        </div>
+        <div class="elegib-motivo">
+          <span>Motivo:</span>
+          <input type="text" placeholder="Se não elegível, descreva o motivo"/>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMORBIDADES -->
+  <div class="section-card">
+    <div class="section-header"><div class="section-pip"></div><span class="section-label">Comorbidades</span></div>
+    <div class="section-body">
+      <div class="check-grid">
+        <label class="c-item"><input type="checkbox"/><span>Diabetes Mellitus (DM)</span></label>
+        <label class="c-item"><input type="checkbox"/><span>Varicorragia</span></label>
+        <label class="c-item"><input type="checkbox"/><span>Hipertensão Arterial</span></label>
+        <label class="c-item"><input type="checkbox"/><span>Doença cardíaca</span></label>
+        <label class="c-item"><input type="checkbox"/><span>Doença renal</span></label>
+        <label class="c-item"><input type="checkbox"/><span>Obesidade</span></label>
+        <label class="c-item"><input type="checkbox"/><span>Tabagismo</span></label>
+        <label class="c-item"><input type="checkbox"/><span>Outras</span></label>
+      </div>
+    </div>
+  </div>
+
+  <!-- SINTOMAS -->
+  <div class="section-card">
+    <div class="section-header"><div class="section-pip"></div><span class="section-label">Sintomas</span></div>
+    <div class="section-body">
+      <div class="row">
+        <div class="row-name">Dor na perna <span class="sub">Escala Visual Analógica (EVA 0–10)</span></div>
+        <div class="field-inline">
+          <input type="number" placeholder="0" min="0" max="10"/>
+          <span class="unit">/ 10</span>
+        </div>
+      </div>
+      <div class="row" style="grid-template-columns: 1fr; gap: .75rem;">
+        <div class="row-name">Limitação funcional</div>
+        <div class="radio-group row-group">
+          <label class="r-item"><input type="radio" name="f1-limitacao"/><span>Nenhuma</span></label>
+          <label class="r-item"><input type="radio" name="f1-limitacao"/><span>Caminhada &lt;10 min</span></label>
+          <label class="r-item"><input type="radio" name="f1-limitacao"/><span>Ficar em pé &lt;30 min</span></label>
+          <label class="r-item"><input type="radio" name="f1-limitacao"/><span>Outra</span></label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXAME PÉ / TORNOZELO -->
+  <div class="section-card">
+    <div class="section-header"><div class="section-pip"></div><span class="section-label">Exame Pé / Tornozelo</span></div>
+    <div class="section-body">
+      <div class="row" style="grid-template-columns: 1fr; gap: .75rem;">
+        <div class="row-name"><span class="item-letter">a.</span>Arco plantar</div>
+        <div class="radio-group row-group">
+          <label class="r-item"><input type="radio" name="f1-arco"/><span>Plano <span style="font-size:.75rem;color:var(--ink-faint);">(&gt;50% pegada preenchida)</span></span></label>
+          <label class="r-item"><input type="radio" name="f1-arco"/><span>Neutro <span style="font-size:.75rem;color:var(--ink-faint);">(25–50%)</span></span></label>
+          <label class="r-item"><input type="radio" name="f1-arco"/><span>Cavo <span style="font-size:.75rem;color:var(--ink-faint);">(&lt;25%)</span></span></label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="row-name"><span class="item-letter">b.</span>Dorsiflexão <span class="sub">Reduzida se &lt;10°</span></div>
+        <div class="field-inline">
+          <input type="number" placeholder="—" min="0" max="90"/>
+          <span class="unit">°</span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="row-name"><span class="item-letter">c.</span>Flexão plantar <span class="sub">Déficit se &lt;40°</span></div>
+        <div class="field-inline">
+          <input type="number" placeholder="—" min="0" max="90"/>
+          <span class="unit">°</span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="row-name"><span class="item-letter">d.</span>Índice de mobilidade total <span class="sub">Rigidez se &lt;50°</span></div>
+        <div class="field-inline" style="gap:1.25rem;">
+          <span style="font-family:var(--mono);font-size:.68rem;color:var(--ink-mid);">Total</span>
+          <input type="number" placeholder="—" min="0"/>
+          <span class="unit">°</span>
+          <span style="font-family:var(--mono);font-size:.68rem;color:var(--ink-mid);margin-left:.5rem;">Rigidez</span>
+          <label class="r-item"><input type="radio" name="f1-rigidez"/><span>Sim</span></label>
+          <label class="r-item"><input type="radio" name="f1-rigidez"/><span>Não</span></label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXAME FÍSICO VENOSO -->
+  <div class="section-card">
+    <div class="section-header"><div class="section-pip"></div><span class="section-label">Exame Físico Venoso</span></div>
+    <div class="section-body">
+      <div class="row" style="grid-template-columns: 1fr; gap: .75rem;">
+        <div class="row-name">Classificação CEAP</div>
+        <div class="radio-group row-group">
+          <label class="r-item"><input type="radio" name="f1-ceap"/><span>C2</span></label>
+          <label class="r-item"><input type="radio" name="f1-ceap"/><span>C3</span></label>
+          <label class="r-item"><input type="radio" name="f1-ceap"/><span>C4a</span></label>
+          <label class="r-item"><input type="radio" name="f1-ceap"/><span>C4b</span></label>
+          <label class="r-item"><input type="radio" name="f1-ceap"/><span>C5</span></label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VCSS -->
+  <div class="section-card">
+    <div class="section-header"><div class="section-pip"></div><span class="section-label">VCSS — Venous Clinical Severity Score</span></div>
+    <div class="section-body" style="padding:0;">
+      <table class="vcss-table">
+        <thead>
+          <tr>
+            <th>Característica Clínica</th>
+            <th>Valor <span style="font-weight:400;font-size:.6rem;">(0–3)</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Dor<span class="vcss-hint">0 = ausente · 1 = leve · 2 = moderada · 3 = intensa</span></td><td><input type="number" class="f1-vcss-input" placeholder="—" min="0" max="3"/></td></tr>
+          <tr><td>Veias varicosas<span class="vcss-hint">0 = ausente · 1 = leve · 2 = moderada · 3 = grave</span></td><td><input type="number" class="f1-vcss-input" placeholder="—" min="0" max="3"/></td></tr>
+          <tr><td>Edema venoso<span class="vcss-hint">0 = ausente · 1 = tarde · 2 = manhã · 3 = constante</span></td><td><input type="number" class="f1-vcss-input" placeholder="—" min="0" max="3"/></td></tr>
+          <tr><td>Pigmentação da pele<span class="vcss-hint">0 = ausente · 1 = localizada · 2 = difusa · 3 = extensa</span></td><td><input type="number" class="f1-vcss-input" placeholder="—" min="0" max="3"/></td></tr>
+          <tr><td>Inflamação<span class="vcss-hint">0 = ausente · 1 = leve · 2 = moderada · 3 = grave</span></td><td><input type="number" class="f1-vcss-input" placeholder="—" min="0" max="3"/></td></tr>
+          <tr><td>Enduração<span class="vcss-hint">0 = ausente · 1 = localizada · 2 = 1/3 inferior · 3 = &gt;1/3 inferior</span></td><td><input type="number" class="f1-vcss-input" placeholder="—" min="0" max="3"/></td></tr>
+          <tr><td>Número de úlceras ativas<span class="vcss-hint">0 = nenhuma · 1 = uma · 2 = duas · 3 = três ou mais</span></td><td><input type="number" class="f1-vcss-input" placeholder="—" min="0" max="3"/></td></tr>
+          <tr><td>Duração da úlcera ativa<span class="vcss-hint">0 = N/A · 1 = &lt;3 meses · 2 = 3–12 meses · 3 = &gt;12 meses</span></td><td><input type="number" class="f1-vcss-input" placeholder="—" min="0" max="3"/></td></tr>
+          <tr><td>Tamanho da úlcera ativa<span class="vcss-hint">0 = N/A · 1 = &lt;2 cm · 2 = 2–6 cm · 3 = &gt;6 cm</span></td><td><input type="number" class="f1-vcss-input" placeholder="—" min="0" max="3"/></td></tr>
+          <tr><td>Uso de terapia compressiva<span class="vcss-hint">0 = não usa · 1 = intermitente · 2 = a maior parte · 3 = sempre</span></td><td><input type="number" class="f1-vcss-input" placeholder="—" min="0" max="3"/></td></tr>
+          <tr class="total-row"><td>Total VCSS</td><td><input type="number" id="f1-vcss-total" placeholder="—" min="0" max="30" readonly/></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="footer-row">
+    <button class="btn btn-ghost" onclick="window.print()">Imprimir</button>
+    <button class="btn btn-pdf" id="f1-btn-pdf">↓ Baixar PDF</button>
+    <button class="btn btn-primary">Registrar</button>
+  </div>
+
+</div>
+</div><!-- /#ficha01-screen -->
+
+<!-- ═══════════════════════════════════════════
+     FICHA 02 — FOTOPLETISMOGRAFIA
+═══════════════════════════════════════════ -->
+<div id="ficha02-screen" class="ficha-screen hidden">
+<div class="wrapper">
+
+  <div class="back-bar">
+    <button class="btn-back" onclick="showDashboard()">Voltar ao painel</button>
+  </div>
+
+  <div class="header-card">
+    <div class="header-left">
+      <span class="header-eyebrow">Título do Estudo</span>
+      <div class="header-study-title">Impacto das Alterações Morfofuncionais do Pé/Tornozelo na Gravidade da Doença Venosa Crônica</div>
+      <div class="header-inst">
+        Universidade do Estado do Rio de Janeiro · Hospital Universitário Pedro Ernesto<br/>
+        UDA de Cirurgia Vascular e Endovascular — CT Vascular UERJ
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="ficha-num">Ficha 02</div>
+      <div class="ficha-name">Fotopletismografia</div>
+    </div>
+  </div>
+
+  <!-- DADOS GERAIS -->
+  <div class="section-card">
+    <div class="section-header"><div class="section-pip"></div><span class="section-label">Dados Gerais</span></div>
+    <div class="section-body">
+      <div class="meta-inner">
+        <div class="meta-field">
+          <label>Pesquisador</label>
+          <input type="text" id="f2-researcher-name" placeholder="—" readonly style="color: var(--blue); font-weight:500;"/>
+        </div>
+        <div class="meta-field">
+          <label>Código do Participante</label>
+          <input type="text" placeholder="Ex.: 2024-001"/>
+        </div>
+        <div class="meta-field">
+          <label>Data da Visita</label>
+          <input type="date"/>
+        </div>
+        <div class="meta-field">
+          <label>Data de Nascimento</label>
+          <input type="date"/>
+        </div>
+        <div class="meta-field">
+          <label>Membro Inferior</label>
+          <div class="mi-toggle">
+            <label class="mi-item"><input type="radio" name="f2-membro" value="Direito"/><span>Direito</span></label>
+            <label class="mi-item"><input type="radio" name="f2-membro" value="Esquerdo"/><span>Esquerdo</span></label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOTOPLETISMOGRAFIA -->
+  <div class="section-card">
+    <div class="section-header"><div class="section-pip"></div><span class="section-label">Fotopletismografia</span></div>
+    <div class="section-body">
+      <div class="row" style="grid-template-columns: 260px 1fr;">
+        <div class="row-name">Técnico D-PPG</div>
+        <div class="field-inline">
+          <input type="text" id="f2-tecnico-name" placeholder="—" readonly style="color: var(--blue); font-weight:500;"/>
+        </div>
+      </div>
+      <div class="row" style="grid-template-columns: 260px 1fr;">
+        <div class="row-name">Qualidade do Exame</div>
+        <div class="radio-group row-group">
+          <label class="r-item"><input type="radio" name="f2-qualidade"/><span>Boa</span></label>
+          <label class="r-item"><input type="radio" name="f2-qualidade"/><span>Regular</span></label>
+          <label class="r-item"><input type="radio" name="f2-qualidade"/><span>Ruim</span></label>
+        </div>
+      </div>
+      <div class="row" style="grid-template-columns: 260px 1fr;">
+        <div class="row-name">Equipamento Usado</div>
+        <div class="field-inline">
+          <input type="text" placeholder="Identificação do equipamento"/>
+        </div>
+      </div>
+      <div class="row" style="grid-template-columns: 260px 1fr;">
+        <div class="row-name">Calibração</div>
+        <div class="radio-group row-group">
+          <label class="r-item"><input type="radio" name="f2-calibracao"/><span>Sim</span></label>
+          <label class="r-item"><input type="radio" name="f2-calibracao"/><span>Não</span></label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PARÂMETROS QUANTITATIVOS -->
+  <div class="section-card">
+    <div class="section-header"><div class="section-pip"></div><span class="section-label">Parâmetros Quantitativos</span></div>
+    <div class="section-body" style="padding:0;">
+      <table class="param-table">
+        <thead>
+          <tr>
+            <th>Parâmetro</th>
+            <th style="text-align:center; width:200px;">Valor</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Venous Refill Time<span class="sub">Tempo de reenchimento venoso</span></td>
+            <td><input type="text" placeholder="—"/><span class="param-unit">s</span></td>
+          </tr>
+          <tr>
+            <td>Half Amplitude<span class="sub">Meia amplitude</span></td>
+            <td><input type="text" placeholder="—"/><span class="param-unit">mV</span></td>
+          </tr>
+          <tr>
+            <td>Initial Inflow<span class="sub">Fluxo inicial de entrada</span></td>
+            <td><input type="text" placeholder="—"/><span class="param-unit">mV/s</span></td>
+          </tr>
+          <tr>
+            <td>Venous Pump Power<span class="sub">Capacidade de bombeamento venoso</span></td>
+            <td><input type="text" placeholder="—"/><span class="param-unit">mV</span></td>
+          </tr>
+          <tr>
+            <td>Venous Refilling Surface<span class="sub">Superfície de reenchimento venoso</span></td>
+            <td><input type="text" placeholder="—"/><span class="param-unit">mV·s</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="footer-row">
+    <button class="btn btn-ghost" onclick="window.print()">Imprimir</button>
+    <button class="btn btn-pdf" id="f2-btn-pdf">↓ Baixar PDF</button>
+    <button class="btn btn-primary">Registrar</button>
+  </div>
+
+</div>
+</div><!-- /#ficha02-screen -->
+
+<!-- ═══════════════════════════════════════════
+     FICHA 03 — ECO-DOPPLER
+═══════════════════════════════════════════ -->
+<div id="ficha03-screen" class="ficha-screen hidden">
+<div class="wrapper">
+
+  <div class="back-bar">
+    <button class="btn-back" onclick="showDashboard()">Voltar ao painel</button>
+  </div>
+
+  <div class="header-card">
+    <div class="header-left">
+      <span class="header-eyebrow">Título do Estudo</span>
+      <div class="header-study-title">Impacto das Alterações Morfofuncionais do Pé/Tornozelo na Gravidade da Doença Venosa Crônica</div>
+      <div class="header-inst">
+        Universidade do Estado do Rio de Janeiro · Hospital Universitário Pedro Ernesto<br/>
+        UDA de Cirurgia Vascular e Endovascular — CT Vascular UERJ
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="ficha-num">Ficha 03</div>
+      <div class="ficha-name">Eco&#8209;Doppler</div>
+    </div>
+  </div>
+
+  <!-- DADOS GERAIS -->
+  <div class="section-card">
+    <div class="section-header"><div class="section-pip"></div><span class="section-label">Dados Gerais</span></div>
+    <div class="section-body">
+      <div class="meta-inner">
+        <div class="meta-field">
+          <label>Pesquisador</label>
+          <input type="text" id="f3-researcher-name" placeholder="—" readonly style="color: var(--blue); font-weight:500;"/>
+        </div>
+        <div class="meta-field">
+          <label>Código do Participante</label>
+          <input type="text" placeholder="Ex.: 2024-001"/>
+        </div>
+        <div class="meta-field">
+          <label>Data da Visita</label>
+          <input type="date"/>
+        </div>
+        <div class="meta-field">
+          <label>Data de Nascimento</label>
+          <input type="date"/>
+        </div>
+        <div class="meta-field">
+          <label>Membro Inferior</label>
+          <div class="mi-toggle">
+            <label class="mi-item"><input type="radio" name="f3-membro" value="Direito"/><span>Direito</span></label>
+            <label class="mi-item"><input type="radio" name="f3-membro" value="Esquerdo"/><span>Esquerdo</span></label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SISTEMA VENOSO SUPERFICIAL -->
+  <div class="section-card">
+    <div class="section-header"><div class="section-pip"></div><span class="section-label">Sistema Venoso Superficial</span></div>
+    <div class="section-body">
+
+      <div class="row f3-row">
+        <div class="row-name">Safena Magna <span class="sub">Coxa</span></div>
+        <div class="measures">
+          <div class="measure">
+            <span class="mlabel">Diâmetro 3 cm JSF</span>
+            <input type="text" placeholder="—"/>
+            <span class="unit">mm</span>
+          </div>
+          <div class="measure">
+            <span class="mlabel">Diâmetro 15 cm JSF</span>
+            <input type="text" placeholder="—"/>
+            <span class="unit">mm</span>
+          </div>
+        </div>
+        <div class="radio-group">
+          <label class="r-item"><input type="radio" name="f3-smc"/><span>Normal</span></label>
+          <label class="r-item"><input type="radio" name="f3-smc"/><span>Refluxo</span></label>
+          <label class="r-item"><input type="radio" name="f3-smc"/><span>Ausente</span></label>
+          <label class="r-item"><input type="radio" name="f3-smc"/><span>Obstruída</span></label>
+        </div>
+      </div>
+
+      <div class="row f3-row">
+        <div class="row-name">Safena Magna <span class="sub">Perna</span></div>
+        <div class="measures">
+          <div class="measure">
+            <span class="mlabel">Diâmetro ⅓ médio perna</span>
+            <input type="text" placeholder="—"/>
+            <span class="unit">mm</span>
+          </div>
+        </div>
+        <div class="radio-group">
+          <label class="r-item"><input type="radio" name="f3-smp"/><span>Normal</span></label>
+          <label class="r-item"><input type="radio" name="f3-smp"/><span>Refluxo</span></label>
+          <label class="r-item"><input type="radio" name="f3-smp"/><span>Ausente</span></label>
+          <label class="r-item"><input type="radio" name="f3-smp"/><span>Obstruída</span></label>
+        </div>
+      </div>
+
+      <div class="row f3-row">
+        <div class="row-name">Safena Parva</div>
+        <div class="measures">
+          <div class="measure">
+            <span class="mlabel">Diâmetro</span>
+            <input type="text" placeholder="—"/>
+            <span class="unit">mm</span>
+          </div>
+        </div>
+        <div class="radio-group">
+          <label class="r-item"><input type="radio" name="f3-sp"/><span>Normal</span></label>
+          <label class="r-item"><input type="radio" name="f3-sp"/><span>Refluxo</span></label>
+          <label class="r-item"><input type="radio" name="f3-sp"/><span>Ausente</span></label>
+          <label class="r-item"><input type="radio" name="f3-sp"/><span>Obstruída</span></label>
+        </div>
+      </div>
+
+      <div class="row two-col">
+        <div class="row-name">Varizes &gt; 4 mm <span class="sub">Acima do joelho</span></div>
+        <div class="radio-group row-group">
+          <label class="r-item"><input type="radio" name="f3-var_acima"/><span>Sim</span></label>
+          <label class="r-item"><input type="radio" name="f3-var_acima"/><span>Não</span></label>
+        </div>
+      </div>
+
+      <div class="row two-col">
+        <div class="row-name">Varizes &gt; 4 mm <span class="sub">Abaixo do joelho</span></div>
+        <div class="radio-group row-group">
+          <label class="r-item"><input type="radio" name="f3-var_abaixo"/><span>Sim</span></label>
+          <label class="r-item"><input type="radio" name="f3-var_abaixo"/><span>Não</span></label>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SISTEMA VENOSO PROFUNDO -->
+  <div class="section-card">
+    <div class="section-header"><div class="section-pip"></div><span class="section-label">Sistema Venoso Profundo</span></div>
+    <div class="section-body">
+
+      <div class="row two-col">
+        <div class="row-name">Eixo Femoral</div>
+        <div class="radio-group row-group">
+          <label class="r-item"><input type="radio" name="f3-efem"/><span>Normal</span></label>
+          <label class="r-item"><input type="radio" name="f3-efem"/><span>Refluxo</span></label>
+          <label class="r-item"><input type="radio" name="f3-efem"/><span>Ausente</span></label>
+          <label class="r-item"><input type="radio" name="f3-efem"/><span>Obstruído</span></label>
+        </div>
+      </div>
+
+      <div class="row two-col">
+        <div class="row-name">Eixo Poplíteo</div>
+        <div class="radio-group row-group">
+          <label class="r-item"><input type="radio" name="f3-epop"/><span>Normal</span></label>
+          <label class="r-item"><input type="radio" name="f3-epop"/><span>Refluxo</span></label>
+          <label class="r-item"><input type="radio" name="f3-epop"/><span>Ausente</span></label>
+          <label class="r-item"><input type="radio" name="f3-epop"/><span>Obstruído</span></label>
+        </div>
+      </div>
+
+      <div class="row two-col">
+        <div class="row-name">Veias</div>
+        <div class="radio-group row-group">
+          <label class="r-item"><input type="radio" name="f3-veias"/><span>Normal</span></label>
+          <label class="r-item"><input type="radio" name="f3-veias"/><span>Refluxo</span></label>
+          <label class="r-item"><input type="radio" name="f3-veias"/><span>Ausente</span></label>
+          <label class="r-item"><input type="radio" name="f3-veias"/><span>Obstruída</span></label>
+        </div>
+      </div>
+
+      <div class="row two-col">
+        <div class="row-name">Perfurantes insuf. coxa <span class="sub">&gt; 3 mm</span></div>
+        <div class="radio-group row-group">
+          <label class="r-item"><input type="radio" name="f3-perf_coxa"/><span>Presente</span></label>
+          <label class="r-item"><input type="radio" name="f3-perf_coxa"/><span>Ausente</span></label>
+        </div>
+      </div>
+
+      <div class="row two-col">
+        <div class="row-name">Perfurantes insuf. perna <span class="sub">&gt; 3 mm</span></div>
+        <div class="radio-group row-group">
+          <label class="r-item"><input type="radio" name="f3-perf_perna"/><span>Presente</span></label>
+          <label class="r-item"><input type="radio" name="f3-perf_perna"/><span>Ausente</span></label>
+        </div>
+      </div>
+
+      <div class="row two-col">
+        <div class="row-name">Comprometimento ilíaco-femoral / pélvico</div>
+        <div class="radio-group row-group">
+          <label class="r-item"><input type="radio" name="f3-iliaco"/><span>Presente</span></label>
+          <label class="r-item"><input type="radio" name="f3-iliaco"/><span>Ausente</span></label>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="footer-row">
+    <button class="btn btn-ghost" onclick="window.print()">Imprimir</button>
+    <button class="btn btn-pdf" id="f3-btn-pdf">↓ Baixar PDF</button>
+    <button class="btn btn-primary">Registrar</button>
+  </div>
+
+</div>
+</div><!-- /#ficha03-screen -->
+
+<script>
+  /* ══════════════════════════════════════════
+     NAVIGATION STATE
+  ══════════════════════════════════════════ */
+  const SENHA = 'projetope';
+  let currentResearcher = '';
+
+  const screens = {
+    login:    document.getElementById('login-screen'),
+    dashboard: document.getElementById('dashboard-screen'),
+    ficha01:  document.getElementById('ficha01-screen'),
+    ficha02:  document.getElementById('ficha02-screen'),
+    ficha03:  document.getElementById('ficha03-screen'),
+  };
+
+  function showOnly(id) {
+    Object.values(screens).forEach(el => el.classList.add('hidden'));
+    screens[id].classList.remove('hidden');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function showDashboard() {
+    showOnly('dashboard');
+  }
+
+  function showFicha(id) {
+    // Populate researcher name in the chosen ficha
+    if (id === 'ficha01') document.getElementById('f1-researcher-name').value = currentResearcher;
+    if (id === 'ficha02') {
+      document.getElementById('f2-researcher-name').value = currentResearcher;
+      document.getElementById('f2-tecnico-name').value    = currentResearcher;
+    }
+    if (id === 'ficha03') document.getElementById('f3-researcher-name').value = currentResearcher;
+    showOnly(id);
+  }
+
+  /* ══════════════════════════════════════════
+     LOGIN
+  ══════════════════════════════════════════ */
+  const btnEntrar  = document.getElementById('btn-entrar');
+  const loginError = document.getElementById('login-error');
+  const inputName  = document.getElementById('login-name');
+  const inputPass  = document.getElementById('login-password');
+
+  function tryLogin() {
+    const name = inputName.value.trim();
+    const pass = inputPass.value;
+    if (!name) {
+      loginError.textContent = 'Por favor, informe o nome do pesquisador.';
+      loginError.classList.add('visible');
+      inputName.focus();
+      return;
+    }
+    if (pass !== SENHA) {
+      loginError.textContent = 'Senha incorreta. Tente novamente.';
+      loginError.classList.add('visible');
+      inputPass.value = '';
+      inputPass.focus();
+      return;
+    }
+    loginError.classList.remove('visible');
+    currentResearcher = name;
+    document.getElementById('dash-researcher-name').textContent = name;
+    showOnly('dashboard');
+  }
+
+  btnEntrar.addEventListener('click', tryLogin);
+  [inputName, inputPass].forEach(el =>
+    el.addEventListener('keydown', e => { if (e.key === 'Enter') tryLogin(); })
+  );
+
+  /* Logout */
+  document.getElementById('btn-logout').addEventListener('click', () => {
+    currentResearcher = '';
+    inputName.value = '';
+    inputPass.value = '';
+    showOnly('login');
+  });
+
+  /* ══════════════════════════════════════════
+     FICHA 01 — IMC automático
+  ══════════════════════════════════════════ */
+  const f1Altura = document.getElementById('f1-input-altura');
+  const f1Peso   = document.getElementById('f1-input-peso');
+  const f1Imc    = document.getElementById('f1-input-imc');
+
+  function calcIMC() {
+    const h = parseFloat(f1Altura.value.replace(',', '.'));
+    const w = parseFloat(f1Peso.value.replace(',', '.'));
+    if (h > 0 && w > 0) {
+      const hm = h > 3 ? h / 100 : h;
+      f1Imc.value = (w / (hm * hm)).toFixed(1);
+    } else {
+      f1Imc.value = '';
+    }
+  }
+  f1Altura.addEventListener('input', calcIMC);
+  f1Peso.addEventListener('input', calcIMC);
+
+  /* ── VCSS total automático ── */
+  const vcssInputs = document.querySelectorAll('.f1-vcss-input');
+  const vcssTotal  = document.getElementById('f1-vcss-total');
+  vcssInputs.forEach(inp => {
+    inp.addEventListener('input', () => {
+      let sum = 0;
+      vcssInputs.forEach(i => { sum += parseInt(i.value) || 0; });
+      vcssTotal.value = sum;
+    });
+  });
+
+  /* ══════════════════════════════════════════
+     PDF DOWNLOAD (shared helper)
+  ══════════════════════════════════════════ */
+  function loadScript(src) {
+    return new Promise((resolve, reject) => {
+      if (document.querySelector('script[src="' + src + '"]')) { resolve(); return; }
+      const s = document.createElement('script');
+      s.src = src; s.onload = resolve; s.onerror = reject;
+      document.head.appendChild(s);
+    });
+  }
+
+  async function downloadPDF(screenId, filename) {
+    try {
+      await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+      await loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
+      const { jsPDF } = window.jspdf;
+      const el = document.getElementById(screenId);
+      const canvas = await html2canvas(el, { scale: 2, useCORS: true, logging: false, backgroundColor: '#F8FAFD' });
+      const imgData = canvas.toDataURL('image/jpeg', 0.95);
+      const pdf     = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+      const pageW   = pdf.internal.pageSize.getWidth();
+      const pageH   = pdf.internal.pageSize.getHeight();
+      const margin  = 10;
+      const imgW    = pageW - margin * 2;
+      const imgH    = (canvas.height * imgW) / canvas.width;
+      const total   = Math.ceil(imgH / (pageH - margin * 2));
+      for (let i = 0; i < total; i++) {
+        if (i > 0) pdf.addPage();
+        pdf.addImage(imgData, 'JPEG', margin, margin - i * (pageH - margin * 2), imgW, imgH);
+      }
+      const today = new Date().toISOString().slice(0, 10);
+      pdf.save(filename + '_' + currentResearcher.replace(/\s+/g, '_') + '_' + today + '.pdf');
+    } catch (err) {
+      console.error(err);
+      alert('Erro ao gerar PDF. Use o botão Imprimir e salve como PDF.');
+    }
+  }
+
+  document.getElementById('f1-btn-pdf').addEventListener('click', async function () {
+    this.textContent = 'Gerando PDF…'; this.disabled = true;
+    await downloadPDF('ficha01-screen', 'Ficha01_DadosClinicos');
+    this.textContent = '↓ Baixar PDF'; this.disabled = false;
+  });
+
+  document.getElementById('f2-btn-pdf').addEventListener('click', async function () {
+    this.textContent = 'Gerando PDF…'; this.disabled = true;
+    await downloadPDF('ficha02-screen', 'Ficha02_Fotopletismografia');
+    this.textContent = '↓ Baixar PDF'; this.disabled = false;
+  });
+
+  document.getElementById('f3-btn-pdf').addEventListener('click', async function () {
+    this.textContent = 'Gerando PDF…'; this.disabled = true;
+    await downloadPDF('ficha03-screen', 'Ficha03_EcoDoppler');
+    this.textContent = '↓ Baixar PDF'; this.disabled = false;
+  });
+</script>
+</body>
+</html>
