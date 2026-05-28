@@ -927,6 +927,40 @@
     /* ficha02 field-inline text width override */
     #ficha02-screen .field-inline input[type="text"] { max-width: 340px; }
 
+    /* ── BOTÃO ENVIAR AO SHEETS ── */
+    .btn-sheets {
+      background: #1A6E35;
+      color: #fff;
+      border: none;
+    }
+    .btn-sheets:hover { background: #145829; }
+    .btn-sheets:disabled { background: #6B9E7A; cursor: not-allowed; }
+
+    /* ── TOAST ── */
+    #toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #0F172A;
+      color: #fff;
+      font-family: var(--sans);
+      font-size: .82rem;
+      padding: .75rem 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(0,0,0,.25);
+      z-index: 9999;
+      opacity: 0;
+      transition: all .35s cubic-bezier(.22,1,.36,1);
+      white-space: nowrap;
+    }
+    #toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+    #toast.toast-ok  { background: #1A6E35; }
+    #toast.toast-err { background: #B91C1C; }
+
     @media print {
       body { background: white; }
       .back-bar, .footer-row, #login-screen, #dashboard-screen { display: none !important; }
@@ -1358,8 +1392,8 @@
 
   <div class="footer-row">
     <button class="btn btn-ghost" onclick="window.print()">Imprimir</button>
+    <button class="btn btn-sheets" id="f1-btn-sheets">↑ Enviar ao Sheets</button>
     <button class="btn btn-pdf" id="f1-btn-pdf">↓ Baixar PDF</button>
-    <button class="btn btn-primary" id="f1-btn-registrar">Registrar</button>
   </div>
 
 </div>
@@ -1495,8 +1529,8 @@
 
   <div class="footer-row">
     <button class="btn btn-ghost" onclick="window.print()">Imprimir</button>
+    <button class="btn btn-sheets" id="f2-btn-sheets">↑ Enviar ao Sheets</button>
     <button class="btn btn-pdf" id="f2-btn-pdf">↓ Baixar PDF</button>
-    <button class="btn btn-primary" id="f2-btn-registrar">Registrar</button>
   </div>
 
 </div>
@@ -1703,14 +1737,25 @@
 
   <div class="footer-row">
     <button class="btn btn-ghost" onclick="window.print()">Imprimir</button>
+    <button class="btn btn-sheets" id="f3-btn-sheets">↑ Enviar ao Sheets</button>
     <button class="btn btn-pdf" id="f3-btn-pdf">↓ Baixar PDF</button>
-    <button class="btn btn-primary" id="f3-btn-registrar">Registrar</button>
   </div>
 
 </div>
 </div><!-- /#ficha03-screen -->
 
+<!-- Toast de notificação -->
+<div id="toast"></div>
+
 <script>
+  /* ══════════════════════════════════════════
+     CONFIGURAÇÃO — GOOGLE SHEETS
+     Cole aqui a URL gerada ao implantar o Apps Script
+     Extensões → Apps Script → Implantar → Novo implante →
+       Tipo: App da Web | Executar como: Eu | Acesso: Qualquer pessoa
+  ══════════════════════════════════════════ */
+  const APPS_SCRIPT_URL = 'COLE_A_URL_DO_APPS_SCRIPT_AQUI';
+
   /* ══════════════════════════════════════════
      NAVIGATION STATE
   ══════════════════════════════════════════ */
@@ -1872,70 +1917,85 @@
   });
 
   /* ══════════════════════════════════════════
-     GOOGLE SHEETS — INTEGRAÇÃO
+     GOOGLE SHEETS — TOAST
   ══════════════════════════════════════════ */
-  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzFdSueEfITCQC6r2rEtQ9t0-k93iAoDSiFO16essD9jpuUH-m3UFwB4lk5i7TRvS8X/exec';
-
-  /* ── Helpers para ler os campos ── */
-  function getRadio(name) {
-    const checked = document.querySelector(`input[type="radio"][name="${name}"]:checked`);
-    return checked ? (checked.value || checked.parentElement.querySelector('span').textContent.trim()) : '';
+  function showToast(msg, tipo = 'ok') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'show toast-' + tipo;
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => { t.className = ''; }, 4000);
   }
 
-  function getCheckboxes(selector) {
-    return Array.from(document.querySelectorAll(selector))
-      .filter(cb => cb.checked)
-      .map(cb => cb.parentElement.querySelector('span').textContent.trim())
-      .join(', ');
-  }
-
-  function getVcssValues() {
-    return Array.from(document.querySelectorAll('.f1-vcss-input')).map(i => i.value || '');
-  }
-
-  /* ── Envio via fetch com mode: no-cors (necessário para GitHub Pages) ── */
-  async function enviarParaSheets(payload, btnEl, labelFicha) {
-    const original = btnEl.textContent;
-    btnEl.textContent = 'Enviando…';
-    btnEl.disabled = true;
-
+  /* ══════════════════════════════════════════
+     GOOGLE SHEETS — ENVIO GENÉRICO
+  ══════════════════════════════════════════ */
+  async function enviarParaSheets(ficha, dados, btn) {
+    if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.startsWith('COLE')) {
+      showToast('Configure a URL do Apps Script no HTML antes de enviar.', 'err');
+      return;
+    }
+    const labelOriginal = btn.textContent;
+    btn.textContent = 'Enviando…';
+    btn.disabled = true;
     try {
-      await fetch(APPS_SCRIPT_URL, {
+      const resp = await fetch(APPS_SCRIPT_URL, {
         method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({ ficha, dados }),
       });
-      alert('✅ ' + labelFicha + ' enviada! Confirme o registro na planilha.');
+      const json = await resp.json();
+      if (json.sucesso) {
+        showToast('✓ Dados enviados ao Google Sheets com sucesso!', 'ok');
+      } else {
+        showToast('Erro: ' + json.mensagem, 'err');
+      }
     } catch (err) {
+      showToast('Falha de conexão. Verifique a URL e tente novamente.', 'err');
       console.error(err);
-      alert('❌ Erro de rede ao enviar ' + labelFicha + '. Verifique sua conexão.');
     } finally {
-      btnEl.textContent = original;
-      btnEl.disabled = false;
+      btn.textContent = labelOriginal;
+      btn.disabled = false;
     }
   }
 
-  /* ── FICHA 01 — Dados Clínicos ── */
-  document.getElementById('f1-btn-registrar').addEventListener('click', function () {
-    const vcss = getVcssValues();
-    const payload = {
-      ficha:            'F01_DadosClinicos',
-      timestamp:        new Date().toISOString(),
+  /* ══════════════════════════════════════════
+     COLETA DE DADOS — FICHA 01
+  ══════════════════════════════════════════ */
+  function getRadio(name) {
+    const sel = document.querySelector(`input[name="${name}"]:checked`);
+    return sel ? sel.value || sel.closest('.r-item').querySelector('span').textContent.trim() : '';
+  }
+  function getCheckboxes(container) {
+    const items = [];
+    container.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => {
+      items.push(cb.closest('.c-item').querySelector('span').textContent.trim());
+    });
+    return items.join('; ');
+  }
+  function getVcssInputs() {
+    const inputs = document.querySelectorAll('.f1-vcss-input');
+    return Array.from(inputs).map(i => i.value || '');
+  }
+
+  document.getElementById('f1-btn-sheets').addEventListener('click', function () {
+    const vcss = getVcssInputs();
+    const dados = {
       pesquisador:      document.getElementById('f1-researcher-name').value,
       codigo:           document.getElementById('f1-codigo').value,
-      data_visita:      document.getElementById('f1-data-visita').value,
-      data_nasc:        document.getElementById('f1-data-nasc').value,
+      dataVisita:       document.getElementById('f1-data-visita').value,
+      dataNasc:         document.getElementById('f1-data-nasc').value,
       membro:           getRadio('f1-membro'),
       idade:            document.getElementById('f1-idade').value,
       sexo:             getRadio('f1-sexo'),
       altura:           document.getElementById('f1-input-altura').value,
       peso:             document.getElementById('f1-input-peso').value,
       imc:              document.getElementById('f1-input-imc').value,
+      // Inclusão
       inc_a:            getRadio('f1-inc_a'),
       inc_b:            getRadio('f1-inc_b'),
       inc_c:            getRadio('f1-inc_c'),
       inc_d:            getRadio('f1-inc_d'),
+      // Exclusão
       exc_a:            getRadio('f1-exc_a'),
       exc_b:            getRadio('f1-exc_b'),
       exc_c:            getRadio('f1-exc_c'),
@@ -1945,79 +2005,89 @@
       exc_g:            getRadio('f1-exc_g'),
       exc_h:            getRadio('f1-exc_h'),
       elegivel:         getRadio('f1-elegivel'),
-      comorbidades:     getCheckboxes('#ficha01-screen input[type="checkbox"]'),
-      eva_dor:          document.getElementById('f1-eva-dor').value,
+      motivoInelegivel: document.querySelector('.elegib-motivo input[type="text"]') ?
+                        document.querySelector('.elegib-motivo input[type="text"]').value : '',
+      // Comorbidades
+      comorbidades:     getCheckboxes(document.querySelector('#ficha01-screen .check-grid')),
+      // Sintomas
+      evaDor:           document.getElementById('f1-eva-dor').value,
       limitacao:        getRadio('f1-limitacao'),
-      arco_plantar:     getRadio('f1-arco'),
+      // Exame Pé/Tornozelo
+      arco:             getRadio('f1-arco'),
       dorsiflexao:      document.getElementById('f1-dorsiflexao').value,
-      flexao_plantar:   document.getElementById('f1-flexao-plantar').value,
-      mobilidade_total: document.getElementById('f1-mobilidade').value,
+      flexaoPlantar:    document.getElementById('f1-flexao-plantar').value,
+      mobilidade:       document.getElementById('f1-mobilidade').value,
       rigidez:          getRadio('f1-rigidez'),
+      // CEAP
       ceap:             getRadio('f1-ceap'),
+      // VCSS
       vcss_dor:         vcss[0],
       vcss_varizes:     vcss[1],
       vcss_edema:       vcss[2],
       vcss_pigmentacao: vcss[3],
       vcss_inflamacao:  vcss[4],
       vcss_enduracao:   vcss[5],
-      vcss_num_ulceras: vcss[6],
-      vcss_dur_ulcera:  vcss[7],
-      vcss_tam_ulcera:  vcss[8],
+      vcss_ulceras_n:   vcss[6],
+      vcss_ulcera_duracao:  vcss[7],
+      vcss_ulcera_tamanho:  vcss[8],
       vcss_compressao:  vcss[9],
       vcss_total:       document.getElementById('f1-vcss-total').value,
     };
-    enviarParaSheets(payload, this, 'Ficha 01');
+    enviarParaSheets('ficha01', dados, this);
   });
 
-  /* ── FICHA 02 — Fotopletismografia ── */
-  document.getElementById('f2-btn-registrar').addEventListener('click', function () {
-    const payload = {
-      ficha:        'F02_Fotopletismografia',
-      timestamp:    new Date().toISOString(),
+  /* ══════════════════════════════════════════
+     COLETA DE DADOS — FICHA 02
+  ══════════════════════════════════════════ */
+  document.getElementById('f2-btn-sheets').addEventListener('click', function () {
+    const dados = {
       pesquisador:  document.getElementById('f2-researcher-name').value,
       codigo:       document.getElementById('f2-codigo').value,
-      data_visita:  document.getElementById('f2-data-visita').value,
-      data_nasc:    document.getElementById('f2-data-nasc').value,
+      dataVisita:   document.getElementById('f2-data-visita').value,
+      dataNasc:     document.getElementById('f2-data-nasc').value,
       membro:       getRadio('f2-membro'),
+      tecnico:      document.getElementById('f2-tecnico-name').value,
       qualidade:    getRadio('f2-qualidade'),
       equipamento:  document.getElementById('f2-equipamento').value,
       calibracao:   getRadio('f2-calibracao'),
       vrt:          document.getElementById('f2-vrt').value,
-      half_ampl:    document.getElementById('f2-half').value,
-      init_inflow:  document.getElementById('f2-inflow').value,
-      venous_pump:  document.getElementById('f2-vpp').value,
+      halfAmplitude:document.getElementById('f2-half').value,
+      inflow:       document.getElementById('f2-inflow').value,
+      vpp:          document.getElementById('f2-vpp').value,
       vrs:          document.getElementById('f2-vrs').value,
     };
-    enviarParaSheets(payload, this, 'Ficha 02');
+    enviarParaSheets('ficha02', dados, this);
   });
 
-  /* ── FICHA 03 — Eco-Doppler ── */
-  document.getElementById('f3-btn-registrar').addEventListener('click', function () {
-    const payload = {
-      ficha:       'F03_EcoDoppler',
-      timestamp:   new Date().toISOString(),
-      pesquisador: document.getElementById('f3-researcher-name').value,
-      codigo:      document.getElementById('f3-codigo').value,
-      data_visita: document.getElementById('f3-data-visita').value,
-      data_nasc:   document.getElementById('f3-data-nasc').value,
-      membro:      getRadio('f3-membro'),
-      smc_d3:      document.getElementById('f3-smc-d3').value,
-      smc_d15:     document.getElementById('f3-smc-d15').value,
-      smc_status:  getRadio('f3-smc'),
-      smp_d:       document.getElementById('f3-smp-d').value,
-      smp_status:  getRadio('f3-smp'),
-      sp_d:        document.getElementById('f3-sp-d').value,
-      sp_status:   getRadio('f3-sp'),
-      var_acima:   getRadio('f3-var_acima'),
-      var_abaixo:  getRadio('f3-var_abaixo'),
-      efem:        getRadio('f3-efem'),
-      epop:        getRadio('f3-epop'),
-      veias:       getRadio('f3-veias'),
-      perf_coxa:   getRadio('f3-perf_coxa'),
-      perf_perna:  getRadio('f3-perf_perna'),
-      iliaco:      getRadio('f3-iliaco'),
+  /* ══════════════════════════════════════════
+     COLETA DE DADOS — FICHA 03
+  ══════════════════════════════════════════ */
+  document.getElementById('f3-btn-sheets').addEventListener('click', function () {
+    const dados = {
+      pesquisador:  document.getElementById('f3-researcher-name').value,
+      codigo:       document.getElementById('f3-codigo').value,
+      dataVisita:   document.getElementById('f3-data-visita').value,
+      dataNasc:     document.getElementById('f3-data-nasc').value,
+      membro:       getRadio('f3-membro'),
+      // Sistema Venoso Superficial
+      smc_d3:       document.getElementById('f3-smc-d3').value,
+      smc_d15:      document.getElementById('f3-smc-d15').value,
+      smc_status:   getRadio('f3-smc'),
+      smp_d:        document.getElementById('f3-smp-d').value,
+      smp_status:   getRadio('f3-smp'),
+      sp_d:         document.getElementById('f3-sp-d').value,
+      sp_status:    getRadio('f3-sp'),
+      var_acima:    getRadio('f3-var_acima'),
+      var_abaixo:   getRadio('f3-var_abaixo'),
+      // Sistema Venoso Profundo
+      efem:         getRadio('f3-efem'),
+      epop:         getRadio('f3-epop'),
+      veias:        getRadio('f3-veias'),
+      perf_coxa:    getRadio('f3-perf_coxa'),
+      perf_perna:   getRadio('f3-perf_perna'),
+      iliaco:       getRadio('f3-iliaco'),
     };
-    enviarParaSheets(payload, this, 'Ficha 03');
+    enviarParaSheets('ficha03', dados, this);
   });
 
 </script>
