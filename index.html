@@ -29,12 +29,8 @@
       min-height: 100vh;
     }
 
-    /* ── HIDDEN UTILITY ── */
     .hidden { display: none !important; }
 
-    /* ═══════════════════════════════════════════
-       LOGIN SCREEN
-    ═══════════════════════════════════════════ */
     #login-screen {
       position: fixed;
       inset: 0;
@@ -159,9 +155,6 @@
     }
     .btn-login:hover { background: var(--blue-mid); }
 
-    /* ═══════════════════════════════════════════
-       DASHBOARD SCREEN
-    ═══════════════════════════════════════════ */
     #dashboard-screen {
       padding: 3rem 1.5rem 5rem;
     }
@@ -173,7 +166,6 @@
       gap: 2rem;
     }
 
-    /* Dashboard header */
     .dash-header {
       background: var(--blue);
       border-radius: 12px;
@@ -261,7 +253,6 @@
     }
     .btn-logout:hover { background: rgba(255,255,255,.18); color: #fff; }
 
-    /* Dashboard section label */
     .dash-section-label {
       font-family: var(--mono);
       font-size: .65rem;
@@ -273,7 +264,6 @@
       border-bottom: 1px solid var(--border);
     }
 
-    /* Ficha cards grid */
     .fichas-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -351,9 +341,6 @@
     }
     .ficha-card-btn:hover { background: var(--blue); color: #fff; border-color: var(--blue); }
 
-    /* ═══════════════════════════════════════════
-       FICHA SCREENS (shared wrapper)
-    ═══════════════════════════════════════════ */
     .ficha-screen {
       padding: 3rem 1.5rem 6rem;
     }
@@ -365,7 +352,6 @@
       gap: 1.25rem;
     }
 
-    /* Back button bar */
     .back-bar {
       display: flex;
       align-items: center;
@@ -392,7 +378,6 @@
     .btn-back:hover { border-color: var(--blue); color: var(--blue); }
     .btn-back::before { content: '←'; }
 
-    /* ── HEADER CARD (fichas) ── */
     .header-card {
       background: var(--blue);
       border-radius: 12px;
@@ -466,7 +451,6 @@
       letter-spacing: -.02em;
     }
 
-    /* ── SECTION CARDS ── */
     .section-card {
       background: var(--card);
       border: 1px solid var(--border);
@@ -496,7 +480,6 @@
     }
     .section-body { padding: .5rem 0; }
 
-    /* ── META / DADOS GERAIS ── */
     .meta-inner {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
@@ -528,7 +511,6 @@
     }
     .meta-field input:focus { border-bottom-color: var(--blue-mid); }
 
-    /* Membro / toggle buttons */
     .mi-toggle {
       display: flex;
       gap: .5rem;
@@ -556,7 +538,6 @@
     }
     .mi-item:has(input:checked) span { color: var(--blue); }
 
-    /* ── ROWS ── */
     .row {
       display: grid;
       grid-template-columns: 1fr auto;
@@ -590,7 +571,6 @@
       margin-top: .15rem;
     }
 
-    /* radios */
     .radio-group { display: flex; flex-direction: column; gap: .45rem; }
     .radio-group.row-group { flex-direction: row; gap: 1.25rem; flex-wrap: wrap; }
 
@@ -621,7 +601,6 @@
       user-select: none;
     }
 
-    /* checkboxes */
     .c-item { display: flex; align-items: center; gap: .5rem; cursor: pointer; }
     .c-item input[type="checkbox"] {
       appearance: none;
@@ -649,7 +628,6 @@
       user-select: none;
     }
 
-    /* checkbox grid */
     .check-grid {
       display: flex;
       flex-wrap: wrap;
@@ -657,7 +635,6 @@
       padding: 1.1rem 2.25rem;
     }
 
-    /* inline text field */
     .field-inline {
       display: flex;
       align-items: center;
@@ -686,7 +663,6 @@
       white-space: nowrap;
     }
 
-    /* elegibility result banner */
     .elegib-row {
       display: flex;
       align-items: center;
@@ -731,7 +707,6 @@
     }
     .elegib-motivo input:focus { border-bottom-color: var(--blue); }
 
-    /* VCSS table */
     .vcss-table {
       width: 100%;
       border-collapse: collapse;
@@ -791,7 +766,6 @@
       margin-top: .15rem;
     }
 
-    /* dados gerais extra row */
     .dg-row {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
@@ -799,7 +773,6 @@
       padding: 0 2.25rem 1.5rem;
     }
 
-    /* ── FOOTER ── */
     .footer-row {
       display: flex;
       align-items: center;
@@ -826,7 +799,6 @@
     .btn-pdf { background: #F0F4FF; color: var(--blue); border: 1.5px solid var(--blue-border); }
     .btn-pdf:hover { background: var(--blue-pale); }
 
-    /* ── FICHA 02 — param table ── */
     .param-table {
       width: 100%;
       border-collapse: collapse;
@@ -889,7 +861,6 @@
       margin-top: .2rem;
     }
 
-    /* ── FICHA 03 — rows / measures ── */
     .row.f3-row {
       grid-template-columns: 220px 1fr 180px;
     }
@@ -924,7 +895,6 @@
       font-size: .65rem;
       color: var(--ink-faint);
     }
-    /* ficha02 field-inline text width override */
     #ficha02-screen .field-inline input[type="text"] { max-width: 340px; }
 
     /* ── BOTÃO ENVIAR AO SHEETS ── */
@@ -984,9 +954,6 @@
 </head>
 <body>
 
-<!-- ═══════════════════════════════════════════
-     LOGIN SCREEN
-═══════════════════════════════════════════ -->
 <div id="login-screen">
   <div class="login-card">
     <div class="login-header">
@@ -1009,12 +976,8 @@
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════
-     DASHBOARD SCREEN
-═══════════════════════════════════════════ -->
 <div id="dashboard-screen" class="hidden">
   <div class="dash-wrapper">
-
     <div class="dash-header">
       <div class="dash-header-left">
         <span class="dash-eyebrow">Título do Estudo</span>
@@ -1030,13 +993,10 @@
         <button class="btn-logout" id="btn-logout">Sair</button>
       </div>
     </div>
-
     <div>
       <div class="dash-section-label">Selecione a ficha a preencher</div>
     </div>
-
     <div class="fichas-grid">
-
       <div class="ficha-card" onclick="showFicha('ficha01')">
         <div class="ficha-card-top">
           <div class="ficha-card-num">Ficha 01</div>
@@ -1047,7 +1007,6 @@
           <button class="ficha-card-btn">Abrir Ficha 01</button>
         </div>
       </div>
-
       <div class="ficha-card" onclick="showFicha('ficha02')">
         <div class="ficha-card-top">
           <div class="ficha-card-num">Ficha 02</div>
@@ -1058,7 +1017,6 @@
           <button class="ficha-card-btn">Abrir Ficha 02</button>
         </div>
       </div>
-
       <div class="ficha-card" onclick="showFicha('ficha03')">
         <div class="ficha-card-top">
           <div class="ficha-card-num">Ficha 03</div>
@@ -1069,21 +1027,16 @@
           <button class="ficha-card-btn">Abrir Ficha 03</button>
         </div>
       </div>
-
     </div>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════
-     FICHA 01 — DADOS CLÍNICOS
-═══════════════════════════════════════════ -->
+<!-- FICHA 01 -->
 <div id="ficha01-screen" class="ficha-screen hidden">
 <div class="wrapper">
-
   <div class="back-bar">
     <button class="btn-back" onclick="showDashboard()">Voltar ao painel</button>
   </div>
-
   <div class="header-card">
     <div class="header-left">
       <span class="header-eyebrow">Título do Estudo</span>
@@ -1098,8 +1051,6 @@
       <div class="ficha-name">Dados Clínicos</div>
     </div>
   </div>
-
-  <!-- DADOS GERAIS -->
   <div class="section-card">
     <div class="section-header"><div class="section-pip"></div><span class="section-label">Dados Gerais</span></div>
     <div class="section-body">
@@ -1155,8 +1106,6 @@
       </div>
     </div>
   </div>
-
-  <!-- ELEGIBILIDADE — INCLUSÃO -->
   <div class="section-card">
     <div class="section-header"><div class="section-pip"></div><span class="section-label">Checklist de Elegibilidade — Inclusão</span></div>
     <div class="section-body">
@@ -1190,8 +1139,6 @@
       </div>
     </div>
   </div>
-
-  <!-- ELEGIBILIDADE — EXCLUSÃO -->
   <div class="section-card">
     <div class="section-header"><div class="section-pip"></div><span class="section-label">Checklist de Elegibilidade — Exclusão</span></div>
     <div class="section-body">
@@ -1264,8 +1211,6 @@
       </div>
     </div>
   </div>
-
-  <!-- COMORBIDADES -->
   <div class="section-card">
     <div class="section-header"><div class="section-pip"></div><span class="section-label">Comorbidades</span></div>
     <div class="section-body">
@@ -1281,8 +1226,6 @@
       </div>
     </div>
   </div>
-
-  <!-- SINTOMAS -->
   <div class="section-card">
     <div class="section-header"><div class="section-pip"></div><span class="section-label">Sintomas</span></div>
     <div class="section-body">
@@ -1304,8 +1247,6 @@
       </div>
     </div>
   </div>
-
-  <!-- EXAME PÉ / TORNOZELO -->
   <div class="section-card">
     <div class="section-header"><div class="section-pip"></div><span class="section-label">Exame Pé / Tornozelo</span></div>
     <div class="section-body">
@@ -1344,8 +1285,6 @@
       </div>
     </div>
   </div>
-
-  <!-- EXAME FÍSICO VENOSO -->
   <div class="section-card">
     <div class="section-header"><div class="section-pip"></div><span class="section-label">Exame Físico Venoso</span></div>
     <div class="section-body">
@@ -1361,8 +1300,6 @@
       </div>
     </div>
   </div>
-
-  <!-- VCSS -->
   <div class="section-card">
     <div class="section-header"><div class="section-pip"></div><span class="section-label">VCSS — Venous Clinical Severity Score</span></div>
     <div class="section-body" style="padding:0;">
@@ -1389,26 +1326,20 @@
       </table>
     </div>
   </div>
-
   <div class="footer-row">
     <button class="btn btn-ghost" onclick="window.print()">Imprimir</button>
     <button class="btn btn-sheets" id="f1-btn-sheets">↑ Enviar ao Sheets</button>
     <button class="btn btn-pdf" id="f1-btn-pdf">↓ Baixar PDF</button>
   </div>
-
 </div>
-</div><!-- /#ficha01-screen -->
+</div>
 
-<!-- ═══════════════════════════════════════════
-     FICHA 02 — FOTOPLETISMOGRAFIA
-═══════════════════════════════════════════ -->
+<!-- FICHA 02 -->
 <div id="ficha02-screen" class="ficha-screen hidden">
 <div class="wrapper">
-
   <div class="back-bar">
     <button class="btn-back" onclick="showDashboard()">Voltar ao painel</button>
   </div>
-
   <div class="header-card">
     <div class="header-left">
       <span class="header-eyebrow">Título do Estudo</span>
@@ -1423,8 +1354,6 @@
       <div class="ficha-name">Fotopletismografia</div>
     </div>
   </div>
-
-  <!-- DADOS GERAIS -->
   <div class="section-card">
     <div class="section-header"><div class="section-pip"></div><span class="section-label">Dados Gerais</span></div>
     <div class="section-body">
@@ -1455,8 +1384,6 @@
       </div>
     </div>
   </div>
-
-  <!-- FOTOPLETISMOGRAFIA -->
   <div class="section-card">
     <div class="section-header"><div class="section-pip"></div><span class="section-label">Fotopletismografia</span></div>
     <div class="section-body">
@@ -1489,8 +1416,6 @@
       </div>
     </div>
   </div>
-
-  <!-- PARÂMETROS QUANTITATIVOS -->
   <div class="section-card">
     <div class="section-header"><div class="section-pip"></div><span class="section-label">Parâmetros Quantitativos</span></div>
     <div class="section-body" style="padding:0;">
@@ -1526,26 +1451,20 @@
       </table>
     </div>
   </div>
-
   <div class="footer-row">
     <button class="btn btn-ghost" onclick="window.print()">Imprimir</button>
     <button class="btn btn-sheets" id="f2-btn-sheets">↑ Enviar ao Sheets</button>
     <button class="btn btn-pdf" id="f2-btn-pdf">↓ Baixar PDF</button>
   </div>
-
 </div>
-</div><!-- /#ficha02-screen -->
+</div>
 
-<!-- ═══════════════════════════════════════════
-     FICHA 03 — ECO-DOPPLER
-═══════════════════════════════════════════ -->
+<!-- FICHA 03 -->
 <div id="ficha03-screen" class="ficha-screen hidden">
 <div class="wrapper">
-
   <div class="back-bar">
     <button class="btn-back" onclick="showDashboard()">Voltar ao painel</button>
   </div>
-
   <div class="header-card">
     <div class="header-left">
       <span class="header-eyebrow">Título do Estudo</span>
@@ -1560,8 +1479,6 @@
       <div class="ficha-name">Eco&#8209;Doppler</div>
     </div>
   </div>
-
-  <!-- DADOS GERAIS -->
   <div class="section-card">
     <div class="section-header"><div class="section-pip"></div><span class="section-label">Dados Gerais</span></div>
     <div class="section-body">
@@ -1592,12 +1509,9 @@
       </div>
     </div>
   </div>
-
-  <!-- SISTEMA VENOSO SUPERFICIAL -->
   <div class="section-card">
     <div class="section-header"><div class="section-pip"></div><span class="section-label">Sistema Venoso Superficial</span></div>
     <div class="section-body">
-
       <div class="row f3-row">
         <div class="row-name">Safena Magna <span class="sub">Coxa</span></div>
         <div class="measures">
@@ -1619,7 +1533,6 @@
           <label class="r-item"><input type="radio" name="f3-smc"/><span>Obstruída</span></label>
         </div>
       </div>
-
       <div class="row f3-row">
         <div class="row-name">Safena Magna <span class="sub">Perna</span></div>
         <div class="measures">
@@ -1636,7 +1549,6 @@
           <label class="r-item"><input type="radio" name="f3-smp"/><span>Obstruída</span></label>
         </div>
       </div>
-
       <div class="row f3-row">
         <div class="row-name">Safena Parva</div>
         <div class="measures">
@@ -1653,7 +1565,6 @@
           <label class="r-item"><input type="radio" name="f3-sp"/><span>Obstruída</span></label>
         </div>
       </div>
-
       <div class="row two-col">
         <div class="row-name">Varizes &gt; 4 mm <span class="sub">Acima do joelho</span></div>
         <div class="radio-group row-group">
@@ -1661,7 +1572,6 @@
           <label class="r-item"><input type="radio" name="f3-var_acima"/><span>Não</span></label>
         </div>
       </div>
-
       <div class="row two-col">
         <div class="row-name">Varizes &gt; 4 mm <span class="sub">Abaixo do joelho</span></div>
         <div class="radio-group row-group">
@@ -1669,15 +1579,11 @@
           <label class="r-item"><input type="radio" name="f3-var_abaixo"/><span>Não</span></label>
         </div>
       </div>
-
     </div>
   </div>
-
-  <!-- SISTEMA VENOSO PROFUNDO -->
   <div class="section-card">
     <div class="section-header"><div class="section-pip"></div><span class="section-label">Sistema Venoso Profundo</span></div>
     <div class="section-body">
-
       <div class="row two-col">
         <div class="row-name">Eixo Femoral</div>
         <div class="radio-group row-group">
@@ -1687,7 +1593,6 @@
           <label class="r-item"><input type="radio" name="f3-efem"/><span>Obstruído</span></label>
         </div>
       </div>
-
       <div class="row two-col">
         <div class="row-name">Eixo Poplíteo</div>
         <div class="radio-group row-group">
@@ -1697,7 +1602,6 @@
           <label class="r-item"><input type="radio" name="f3-epop"/><span>Obstruído</span></label>
         </div>
       </div>
-
       <div class="row two-col">
         <div class="row-name">Veias</div>
         <div class="radio-group row-group">
@@ -1707,7 +1611,6 @@
           <label class="r-item"><input type="radio" name="f3-veias"/><span>Obstruída</span></label>
         </div>
       </div>
-
       <div class="row two-col">
         <div class="row-name">Perfurantes insuf. coxa <span class="sub">&gt; 3 mm</span></div>
         <div class="radio-group row-group">
@@ -1715,7 +1618,6 @@
           <label class="r-item"><input type="radio" name="f3-perf_coxa"/><span>Ausente</span></label>
         </div>
       </div>
-
       <div class="row two-col">
         <div class="row-name">Perfurantes insuf. perna <span class="sub">&gt; 3 mm</span></div>
         <div class="radio-group row-group">
@@ -1723,7 +1625,6 @@
           <label class="r-item"><input type="radio" name="f3-perf_perna"/><span>Ausente</span></label>
         </div>
       </div>
-
       <div class="row two-col">
         <div class="row-name">Comprometimento ilíaco-femoral / pélvico</div>
         <div class="radio-group row-group">
@@ -1731,34 +1632,21 @@
           <label class="r-item"><input type="radio" name="f3-iliaco"/><span>Ausente</span></label>
         </div>
       </div>
-
     </div>
   </div>
-
   <div class="footer-row">
     <button class="btn btn-ghost" onclick="window.print()">Imprimir</button>
     <button class="btn btn-sheets" id="f3-btn-sheets">↑ Enviar ao Sheets</button>
     <button class="btn btn-pdf" id="f3-btn-pdf">↓ Baixar PDF</button>
   </div>
-
 </div>
-</div><!-- /#ficha03-screen -->
+</div>
 
-<!-- Toast de notificação -->
 <div id="toast"></div>
 
 <script>
-  /* ══════════════════════════════════════════
-     CONFIGURAÇÃO — GOOGLE SHEETS
-     Cole aqui a URL gerada ao implantar o Apps Script
-     Extensões → Apps Script → Implantar → Novo implante →
-       Tipo: App da Web | Executar como: Eu | Acesso: Qualquer pessoa
-  ══════════════════════════════════════════ */
   const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxR6xTz1r17lznGxgix1ka9lkxvFSGtNGfPf4_jn2997wSyKlXHRK2gF2jPYsLJscHc/exec';
 
-  /* ══════════════════════════════════════════
-     NAVIGATION STATE
-  ══════════════════════════════════════════ */
   const SENHA = 'projetope';
   let currentResearcher = '';
 
@@ -1788,9 +1676,6 @@
     showOnly(id);
   }
 
-  /* ══════════════════════════════════════════
-     LOGIN
-  ══════════════════════════════════════════ */
   const btnEntrar  = document.getElementById('btn-entrar');
   const loginError = document.getElementById('login-error');
   const inputName  = document.getElementById('login-name');
@@ -1830,9 +1715,6 @@
     showOnly('login');
   });
 
-  /* ══════════════════════════════════════════
-     FICHA 01 — IMC automático
-  ══════════════════════════════════════════ */
   const f1Altura = document.getElementById('f1-input-altura');
   const f1Peso   = document.getElementById('f1-input-peso');
   const f1Imc    = document.getElementById('f1-input-imc');
@@ -1850,7 +1732,6 @@
   f1Altura.addEventListener('input', calcIMC);
   f1Peso.addEventListener('input', calcIMC);
 
-  /* ── VCSS total automático ── */
   const vcssInputs = document.querySelectorAll('.f1-vcss-input');
   const vcssTotal  = document.getElementById('f1-vcss-total');
   vcssInputs.forEach(inp => {
@@ -1861,9 +1742,6 @@
     });
   });
 
-  /* ══════════════════════════════════════════
-     PDF DOWNLOAD
-  ══════════════════════════════════════════ */
   function loadScript(src) {
     return new Promise((resolve, reject) => {
       if (document.querySelector('script[src="' + src + '"]')) { resolve(); return; }
@@ -1928,27 +1806,19 @@
   }
 
   /* ══════════════════════════════════════════
-     GOOGLE SHEETS — ENVIO GENÉRICO
+     GOOGLE SHEETS — ENVIO GENÉRICO (no-cors)
   ══════════════════════════════════════════ */
   async function enviarParaSheets(ficha, dados, btn) {
-    if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.startsWith('COLE')) {
-      showToast('Configure a URL do Apps Script no HTML antes de enviar.', 'err');
-      return;
-    }
     const labelOriginal = btn.textContent;
     btn.textContent = 'Enviando…';
     btn.disabled = true;
     try {
-      const resp = await fetch(APPS_SCRIPT_URL, {
+      await fetch(APPS_SCRIPT_URL, {
         method: 'POST',
+        mode: 'no-cors',
         body: JSON.stringify({ ficha, dados }),
       });
-      const json = await resp.json();
-      if (json.sucesso) {
-        showToast('✓ Dados enviados ao Google Sheets com sucesso!', 'ok');
-      } else {
-        showToast('Erro: ' + json.mensagem, 'err');
-      }
+      showToast('✓ Dados enviados ao Google Sheets!', 'ok');
     } catch (err) {
       showToast('Falha de conexão. Verifique a URL e tente novamente.', 'err');
       console.error(err);
@@ -1959,7 +1829,7 @@
   }
 
   /* ══════════════════════════════════════════
-     COLETA DE DADOS — FICHA 01
+     HELPERS
   ══════════════════════════════════════════ */
   function getRadio(name) {
     const sel = document.querySelector(`input[name="${name}"]:checked`);
@@ -1973,94 +1843,88 @@
     return items.join('; ');
   }
   function getVcssInputs() {
-    const inputs = document.querySelectorAll('.f1-vcss-input');
-    return Array.from(inputs).map(i => i.value || '');
+    return Array.from(document.querySelectorAll('.f1-vcss-input')).map(i => i.value || '');
   }
 
+  /* ══════════════════════════════════════════
+     FICHA 01
+  ══════════════════════════════════════════ */
   document.getElementById('f1-btn-sheets').addEventListener('click', function () {
     const vcss = getVcssInputs();
     const dados = {
-      pesquisador:      document.getElementById('f1-researcher-name').value,
-      codigo:           document.getElementById('f1-codigo').value,
-      dataVisita:       document.getElementById('f1-data-visita').value,
-      dataNasc:         document.getElementById('f1-data-nasc').value,
-      membro:           getRadio('f1-membro'),
-      idade:            document.getElementById('f1-idade').value,
-      sexo:             getRadio('f1-sexo'),
-      altura:           document.getElementById('f1-input-altura').value,
-      peso:             document.getElementById('f1-input-peso').value,
-      imc:              document.getElementById('f1-input-imc').value,
-      // Inclusão
-      inc_a:            getRadio('f1-inc_a'),
-      inc_b:            getRadio('f1-inc_b'),
-      inc_c:            getRadio('f1-inc_c'),
-      inc_d:            getRadio('f1-inc_d'),
-      // Exclusão
-      exc_a:            getRadio('f1-exc_a'),
-      exc_b:            getRadio('f1-exc_b'),
-      exc_c:            getRadio('f1-exc_c'),
-      exc_d:            getRadio('f1-exc_d'),
-      exc_e:            getRadio('f1-exc_e'),
-      exc_f:            getRadio('f1-exc_f'),
-      exc_g:            getRadio('f1-exc_g'),
-      exc_h:            getRadio('f1-exc_h'),
-      elegivel:         getRadio('f1-elegivel'),
-      motivoInelegivel: document.querySelector('.elegib-motivo input[type="text"]') ?
-                        document.querySelector('.elegib-motivo input[type="text"]').value : '',
-      // Comorbidades
-      comorbidades:     getCheckboxes(document.querySelector('#ficha01-screen .check-grid')),
-      // Sintomas
-      evaDor:           document.getElementById('f1-eva-dor').value,
-      limitacao:        getRadio('f1-limitacao'),
-      // Exame Pé/Tornozelo
-      arco:             getRadio('f1-arco'),
-      dorsiflexao:      document.getElementById('f1-dorsiflexao').value,
-      flexaoPlantar:    document.getElementById('f1-flexao-plantar').value,
-      mobilidade:       document.getElementById('f1-mobilidade').value,
-      rigidez:          getRadio('f1-rigidez'),
-      // CEAP
-      ceap:             getRadio('f1-ceap'),
-      // VCSS
-      vcss_dor:         vcss[0],
-      vcss_varizes:     vcss[1],
-      vcss_edema:       vcss[2],
-      vcss_pigmentacao: vcss[3],
-      vcss_inflamacao:  vcss[4],
-      vcss_enduracao:   vcss[5],
-      vcss_ulceras_n:   vcss[6],
-      vcss_ulcera_duracao:  vcss[7],
-      vcss_ulcera_tamanho:  vcss[8],
-      vcss_compressao:  vcss[9],
-      vcss_total:       document.getElementById('f1-vcss-total').value,
+      pesquisador:         document.getElementById('f1-researcher-name').value,
+      codigo:              document.getElementById('f1-codigo').value,
+      dataVisita:          document.getElementById('f1-data-visita').value,
+      dataNasc:            document.getElementById('f1-data-nasc').value,
+      membro:              getRadio('f1-membro'),
+      idade:               document.getElementById('f1-idade').value,
+      sexo:                getRadio('f1-sexo'),
+      altura:              document.getElementById('f1-input-altura').value,
+      peso:                document.getElementById('f1-input-peso').value,
+      imc:                 document.getElementById('f1-input-imc').value,
+      inc_a:               getRadio('f1-inc_a'),
+      inc_b:               getRadio('f1-inc_b'),
+      inc_c:               getRadio('f1-inc_c'),
+      inc_d:               getRadio('f1-inc_d'),
+      exc_a:               getRadio('f1-exc_a'),
+      exc_b:               getRadio('f1-exc_b'),
+      exc_c:               getRadio('f1-exc_c'),
+      exc_d:               getRadio('f1-exc_d'),
+      exc_e:               getRadio('f1-exc_e'),
+      exc_f:               getRadio('f1-exc_f'),
+      exc_g:               getRadio('f1-exc_g'),
+      exc_h:               getRadio('f1-exc_h'),
+      elegivel:            getRadio('f1-elegivel'),
+      motivoInelegivel:    document.querySelector('.elegib-motivo input[type="text"]')?.value || '',
+      comorbidades:        getCheckboxes(document.querySelector('#ficha01-screen .check-grid')),
+      evaDor:              document.getElementById('f1-eva-dor').value,
+      limitacao:           getRadio('f1-limitacao'),
+      arco:                getRadio('f1-arco'),
+      dorsiflexao:         document.getElementById('f1-dorsiflexao').value,
+      flexaoPlantar:       document.getElementById('f1-flexao-plantar').value,
+      mobilidade:          document.getElementById('f1-mobilidade').value,
+      rigidez:             getRadio('f1-rigidez'),
+      ceap:                getRadio('f1-ceap'),
+      vcss_dor:            vcss[0],
+      vcss_varizes:        vcss[1],
+      vcss_edema:          vcss[2],
+      vcss_pigmentacao:    vcss[3],
+      vcss_inflamacao:     vcss[4],
+      vcss_enduracao:      vcss[5],
+      vcss_ulceras_n:      vcss[6],
+      vcss_ulcera_duracao: vcss[7],
+      vcss_ulcera_tamanho: vcss[8],
+      vcss_compressao:     vcss[9],
+      vcss_total:          document.getElementById('f1-vcss-total').value,
     };
     enviarParaSheets('ficha01', dados, this);
   });
 
   /* ══════════════════════════════════════════
-     COLETA DE DADOS — FICHA 02
+     FICHA 02
   ══════════════════════════════════════════ */
   document.getElementById('f2-btn-sheets').addEventListener('click', function () {
     const dados = {
-      pesquisador:  document.getElementById('f2-researcher-name').value,
-      codigo:       document.getElementById('f2-codigo').value,
-      dataVisita:   document.getElementById('f2-data-visita').value,
-      dataNasc:     document.getElementById('f2-data-nasc').value,
-      membro:       getRadio('f2-membro'),
-      tecnico:      document.getElementById('f2-tecnico-name').value,
-      qualidade:    getRadio('f2-qualidade'),
-      equipamento:  document.getElementById('f2-equipamento').value,
-      calibracao:   getRadio('f2-calibracao'),
-      vrt:          document.getElementById('f2-vrt').value,
-      halfAmplitude:document.getElementById('f2-half').value,
-      inflow:       document.getElementById('f2-inflow').value,
-      vpp:          document.getElementById('f2-vpp').value,
-      vrs:          document.getElementById('f2-vrs').value,
+      pesquisador:   document.getElementById('f2-researcher-name').value,
+      codigo:        document.getElementById('f2-codigo').value,
+      dataVisita:    document.getElementById('f2-data-visita').value,
+      dataNasc:      document.getElementById('f2-data-nasc').value,
+      membro:        getRadio('f2-membro'),
+      tecnico:       document.getElementById('f2-tecnico-name').value,
+      qualidade:     getRadio('f2-qualidade'),
+      equipamento:   document.getElementById('f2-equipamento').value,
+      calibracao:    getRadio('f2-calibracao'),
+      vrt:           document.getElementById('f2-vrt').value,
+      halfAmplitude: document.getElementById('f2-half').value,
+      inflow:        document.getElementById('f2-inflow').value,
+      vpp:           document.getElementById('f2-vpp').value,
+      vrs:           document.getElementById('f2-vrs').value,
     };
     enviarParaSheets('ficha02', dados, this);
   });
 
   /* ══════════════════════════════════════════
-     COLETA DE DADOS — FICHA 03
+     FICHA 03
   ══════════════════════════════════════════ */
   document.getElementById('f3-btn-sheets').addEventListener('click', function () {
     const dados = {
@@ -2069,7 +1933,6 @@
       dataVisita:   document.getElementById('f3-data-visita').value,
       dataNasc:     document.getElementById('f3-data-nasc').value,
       membro:       getRadio('f3-membro'),
-      // Sistema Venoso Superficial
       smc_d3:       document.getElementById('f3-smc-d3').value,
       smc_d15:      document.getElementById('f3-smc-d15').value,
       smc_status:   getRadio('f3-smc'),
@@ -2079,7 +1942,6 @@
       sp_status:    getRadio('f3-sp'),
       var_acima:    getRadio('f3-var_acima'),
       var_abaixo:   getRadio('f3-var_abaixo'),
-      // Sistema Venoso Profundo
       efem:         getRadio('f3-efem'),
       epop:         getRadio('f3-epop'),
       veias:        getRadio('f3-veias'),
@@ -2089,7 +1951,6 @@
     };
     enviarParaSheets('ficha03', dados, this);
   });
-
 </script>
 </body>
 </html>
