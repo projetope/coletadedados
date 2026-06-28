@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- VERSÃO: 2026-06-28-r2 · getRadio corrigido · Inclusão/Exclusão/VCSS consolidados -->
+<!-- VERSÃO: 2026-06-28-r3 · Código do Participante (F01) corrigido -->
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8"/>
@@ -1401,7 +1401,7 @@
 </div><!-- /#f03 -->
 
 <script>
-  console.log('%c CT Vascular UERJ — versão 2026-06-28-r2 (getRadio corrigido) ', 'background:#0C2D6B;color:#fff;padding:4px;');
+  console.log('%c CT Vascular UERJ — versão 2026-06-28-r3 (código participante F01 corrigido) ', 'background:#0C2D6B;color:#fff;padding:4px;');
   const SENHA = 'projetope';
   let currentResearcher = '';
 
@@ -1664,7 +1664,7 @@
   // ── collect ficha 01 ──
   function collectF01() {
     // Dados Gerais — seleção direta por tipo, sem misturar com radios
-    const metaTextInputs = document.querySelectorAll('#f01 .meta-inner input[type="text"]'); // [0]=código participante
+    const metaTextInputs = document.querySelectorAll('#f01 .meta-inner input[type="text"]:not(#f01-researcher)'); // [0]=código participante (exclui pesquisador)
     const metaDateInputs = document.querySelectorAll('#f01 .meta-inner input[type="date"]'); // [0]=visita [1]=nascimento
     const dgNumberInputs = document.querySelectorAll('#f01 .dg-row input[type="number"]');   // [0]=idade
 
