@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- VERSÃO: 2026-06-28-r2 · getRadio corrigido · Inclusão/Exclusão/VCSS consolidados -->
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8"/>
@@ -1400,6 +1401,7 @@
 </div><!-- /#f03 -->
 
 <script>
+  console.log('%c CT Vascular UERJ — versão 2026-06-28-r2 (getRadio corrigido) ', 'background:#0C2D6B;color:#fff;padding:4px;');
   const SENHA = 'projetope';
   let currentResearcher = '';
 
@@ -1633,7 +1635,11 @@
   // ── helpers ──
   function getRadio(name) {
     const el = document.querySelector('input[name="' + name + '"]:checked');
-    return el ? el.value || el.parentElement.textContent.trim() : '';
+    if (!el) return '';
+    // Radios sem atributo "value" retornam 'on' por padrão no navegador — ignorar e usar o texto do label
+    if (el.value && el.value !== 'on') return el.value;
+    const span = el.parentElement.querySelector('span');
+    return span ? span.textContent.trim() : el.parentElement.textContent.trim();
   }
   function getVal(id) {
     const el = document.getElementById(id);
@@ -1646,85 +1652,67 @@
       .map(l => l.querySelector('span').textContent.trim())
       .join(', ');
   }
-  function getInputByLabel(sectionId, labelText) {
-    const rows = document.querySelectorAll('#' + sectionId + ' .row, #' + sectionId + ' .meta-field');
-    for (const row of rows) {
-      const name = row.querySelector('.row-name, label');
-      if (name && name.textContent.includes(labelText)) {
-        const inp = row.querySelector('input[type="text"], input[type="number"], input[type="date"]');
-        if (inp) return inp.value.trim();
-      }
+  function getSectionCard(containerId, labelText) {
+    const cards = document.querySelectorAll('#' + containerId + ' .section-card');
+    for (const card of cards) {
+      const label = card.querySelector('.section-label');
+      if (label && label.textContent.trim() === labelText) return card;
     }
-    return '';
+    return null;
   }
 
   // ── collect ficha 01 ──
   function collectF01() {
-    const vcssInputs = document.querySelectorAll('.vcss-table tbody tr:not(.total-row) input[type="number"]');
-    const vcssLabels = ['Dor','Veias varicosas','Edema venoso','Pigmentação','Inflamação','Enduração','Úlceras ativas','Duração úlcera','Tamanho úlcera','Terapia compressiva'];
-    const vcss = {};
-    vcssInputs.forEach((inp, i) => { vcss[vcssLabels[i]] = inp.value || ''; });
+    // Dados Gerais — seleção direta por tipo, sem misturar com radios
+    const metaTextInputs = document.querySelectorAll('#f01 .meta-inner input[type="text"]'); // [0]=código participante
+    const metaDateInputs = document.querySelectorAll('#f01 .meta-inner input[type="date"]'); // [0]=visita [1]=nascimento
+    const dgNumberInputs = document.querySelectorAll('#f01 .dg-row input[type="number"]');   // [0]=idade
 
-    // Dados Gerais
-    const dg = document.querySelectorAll('#f01 .meta-inner input, #f01 .dg-row input');
-    const dgVals = Array.from(dg).map(i => i.value.trim());
-
-    // Sintomas EVA
-    const evaInput = document.querySelector('#f01 .row .field-inline input[type="number"]');
+    // Pé/tornozelo — 3 campos numéricos dentro de .field-inline (dorsiflexão, flexão plantar, mobilidade total)
+    const peCard = getSectionCard('f01', 'Exame Pé / Tornozelo');
+    const peNumberInputs = peCard ? peCard.querySelectorAll('input[type="number"]') : [];
+    const sintomasCard = getSectionCard('f01', 'Sintomas');
+    const evaInputEl = sintomasCard ? sintomasCard.querySelector('input[type="number"]') : null;
 
     return {
       sheet: 'Ficha01',
       timestamp: new Date().toLocaleString('pt-BR'),
       pesquisador: getVal('f01-researcher'),
-      codigo_participante: dgVals[1] || '',
-      data_visita: dgVals[2] || '',
-      data_nascimento: dgVals[3] || '',
+      codigo_participante: metaTextInputs[0] ? metaTextInputs[0].value.trim() : '',
+      data_visita: metaDateInputs[0] ? metaDateInputs[0].value : '',
+      data_nascimento: metaDateInputs[1] ? metaDateInputs[1].value : '',
       membro: getRadio('f01-membro'),
-      idade: dgVals[5] || '',
+      idade: dgNumberInputs[0] ? dgNumberInputs[0].value.trim() : '',
       sexo: getRadio('f01-sexo'),
       altura: getVal('f01-altura'),
       peso: getVal('f01-peso'),
       imc: getVal('f01-imc'),
-      // Inclusão
-      inc_a: getRadio('f01-inc_a'),
-      inc_b: getRadio('f01-inc_b'),
-      inc_c: getRadio('f01-inc_c'),
-      inc_d: getRadio('f01-inc_d'),
-      // Exclusão
-      exc_a: getRadio('f01-exc_a'),
-      exc_b: getRadio('f01-exc_b'),
-      exc_c: getRadio('f01-exc_c'),
-      exc_d: getRadio('f01-exc_d'),
-      exc_e: getRadio('f01-exc_e'),
-      exc_f: getRadio('f01-exc_f'),
-      exc_g: getRadio('f01-exc_g'),
-      exc_h: getRadio('f01-exc_h'),
+      // Inclusão — resumo único: "Sim" somente se TODOS os critérios = Sim
+      inclusao_atende: (function(){
+        const criterios = ['f01-inc_a','f01-inc_b','f01-inc_c','f01-inc_d'].map(getRadio);
+        return criterios.every(v => v === 'Sim') ? 'Sim' : 'Não';
+      })(),
+      // Exclusão — resumo único: "Sim" se QUALQUER critério = Sim (indica não elegível)
+      exclusao_presente: (function(){
+        const criterios = ['f01-exc_a','f01-exc_b','f01-exc_c','f01-exc_d','f01-exc_e','f01-exc_f','f01-exc_g','f01-exc_h'].map(getRadio);
+        return criterios.some(v => v === 'Sim') ? 'Sim' : 'Não';
+      })(),
       elegivel: getRadio('f01-elegivel'),
       motivo_inelegivel: (function(){ const m = document.querySelector('.elegib-motivo input[type="text"]'); return m ? m.value.trim() : ''; })(),
       // Comorbidades
       comorbidades: getChecks('#f01 .check-grid'),
       // CEAP
       ceap: getRadio('f01-ceap'),
-      // VCSS
-      vcss_dor: vcss['Dor'],
-      vcss_varizes: vcss['Veias varicosas'],
-      vcss_edema: vcss['Edema venoso'],
-      vcss_pigmentacao: vcss['Pigmentação'],
-      vcss_inflamacao: vcss['Inflamação'],
-      vcss_enduracao: vcss['Enduração'],
-      vcss_ulceras: vcss['Úlceras ativas'],
-      vcss_duracao: vcss['Duração úlcera'],
-      vcss_tamanho: vcss['Tamanho úlcera'],
-      vcss_terapia: vcss['Terapia compressiva'],
+      // VCSS — somente o total
       vcss_total: getVal('f01-vcss-total'),
       // Sintomas
-      eva: evaInput ? evaInput.value.trim() : '',
+      eva: evaInputEl ? evaInputEl.value.trim() : '',
       limitacao: getRadio('f01-limitacao'),
       // Pé / tornozelo
       arco: getRadio('f01-arco'),
-      dorsiflexao: (function(){ const inputs = document.querySelectorAll('#f01 .section-card:nth-of-type(8) .field-inline input'); return inputs[0] ? inputs[0].value.trim() : ''; })(),
-      flexao_plantar: (function(){ const inputs = document.querySelectorAll('#f01 .section-card:nth-of-type(8) .field-inline input'); return inputs[1] ? inputs[1].value.trim() : ''; })(),
-      mobilidade_total: (function(){ const inputs = document.querySelectorAll('#f01 .section-card:nth-of-type(8) .field-inline input'); return inputs[2] ? inputs[2].value.trim() : ''; })(),
+      dorsiflexao: peNumberInputs[0] ? peNumberInputs[0].value.trim() : '',
+      flexao_plantar: peNumberInputs[1] ? peNumberInputs[1].value.trim() : '',
+      mobilidade_total: peNumberInputs[2] ? peNumberInputs[2].value.trim() : '',
       rigidez: getRadio('f01-rigidez'),
     };
   }
