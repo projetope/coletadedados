@@ -473,6 +473,24 @@
     }
     .section-body { padding: .5rem 0; }
 
+    .btn-select-all {
+      margin-left: auto;
+      font-family: var(--mono);
+      font-size: .6rem;
+      font-weight: 500;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--blue);
+      background: var(--card);
+      border: 1px solid var(--blue-border);
+      border-radius: 6px;
+      padding: .35rem .75rem;
+      cursor: pointer;
+      transition: background .15s;
+      white-space: nowrap;
+    }
+    .btn-select-all:hover { background: var(--blue-pale); }
+
     /* ── META / DADOS GERAIS ── */
     .meta-inner {
       display: grid;
@@ -561,7 +579,7 @@
 
     /* radios */
     .radio-group { display: flex; flex-direction: column; gap: .45rem; }
-    .radio-group.row-group { flex-direction: row; gap: 1.25rem; flex-wrap: wrap; }
+    .radio-group.row-group { flex-direction: row; gap: 1.25rem; flex-wrap: wrap; align-items: center; }
 
     .r-item { display: flex; align-items: center; gap: .5rem; cursor: pointer; }
     .r-item input[type="radio"] {
@@ -865,7 +883,7 @@
       .header-right { text-align: left; }
       .meta-inner, .dg-row { padding: 1.25rem; }
       .row, .row.two-col, .row-3col { grid-template-columns: 1fr; padding: .9rem 1.25rem; }
-      .section-header { padding: 1rem 1.25rem; }
+      .section-header { padding: 1rem 1.25rem; flex-wrap: wrap; }
       .check-grid { padding: 1rem 1.25rem; }
       .vcss-table thead th, .vcss-table tbody td { padding: .75rem 1.25rem; }
       .param-table thead th, .param-table tbody td { padding: .75rem 1.25rem; }
@@ -1038,7 +1056,7 @@
 
   <!-- ELEGIBILIDADE INCLUSÃO -->
   <div class="section-card">
-    <div class="section-header"><div class="section-pip"></div><span class="section-label">Checklist de Elegibilidade — Inclusão</span></div>
+    <div class="section-header"><div class="section-pip"></div><span class="section-label">Checklist de Elegibilidade — Inclusão</span><button type="button" class="btn-select-all" onclick="selectAllRadios(['f01-inc_a','f01-inc_b','f01-inc_c','f01-inc_d'],'Sim')">Marcar tudo como Sim</button></div>
     <div class="section-body">
       <div class="row"><div class="row-name"><span class="item-letter">a.</span>Diagnóstico de DVC CEAP C2–C5 confirmado pelo exame clínico</div><div class="radio-group row-group"><label class="r-item"><input type="radio" name="f01-inc_a"/><span>Sim</span></label><label class="r-item"><input type="radio" name="f01-inc_a"/><span>Não</span></label></div></div>
       <div class="row"><div class="row-name"><span class="item-letter">b.</span>Idade a partir de 18 anos</div><div class="radio-group row-group"><label class="r-item"><input type="radio" name="f01-inc_b"/><span>Sim</span></label><label class="r-item"><input type="radio" name="f01-inc_b"/><span>Não</span></label></div></div>
@@ -1049,7 +1067,7 @@
 
   <!-- ELEGIBILIDADE EXCLUSÃO -->
   <div class="section-card">
-    <div class="section-header"><div class="section-pip"></div><span class="section-label">Checklist de Elegibilidade — Exclusão</span></div>
+    <div class="section-header"><div class="section-pip"></div><span class="section-label">Checklist de Elegibilidade — Exclusão</span><button type="button" class="btn-select-all" onclick="selectAllRadios(['f01-exc_a','f01-exc_b','f01-exc_c','f01-exc_d','f01-exc_e','f01-exc_f','f01-exc_g','f01-exc_h'],'Não')">Marcar tudo como Não</button></div>
     <div class="section-body">
       <div class="row"><div class="row-name"><span class="item-letter">a.</span>Arteriopatia periférica grave<span class="sub">Ausência de pulsos palpáveis e/ou Índice Tornozelo-Braquial &lt;0,9</span></div><div class="radio-group row-group"><label class="r-item"><input type="radio" name="f01-exc_a"/><span>Sim</span></label><label class="r-item"><input type="radio" name="f01-exc_a"/><span>Não</span></label></div></div>
       <div class="row"><div class="row-name"><span class="item-letter">b.</span>Neuropatia sensorial grave<span class="sub">Perda de sensibilidade tátil nos pés</span></div><div class="radio-group row-group"><label class="r-item"><input type="radio" name="f01-exc_b"/><span>Sim</span></label><label class="r-item"><input type="radio" name="f01-exc_b"/><span>Não</span></label></div></div>
@@ -1135,11 +1153,12 @@
       </div>
       <div class="row" style="grid-template-columns: 1fr; gap: .75rem;">
         <div class="row-name">Limitação funcional</div>
-        <div class="radio-group row-group">
-          <label class="r-item"><input type="radio" name="f01-limitacao"/><span>Nenhuma</span></label>
-          <label class="r-item"><input type="radio" name="f01-limitacao"/><span>Caminhada &gt;10 min</span></label>
-          <label class="r-item"><input type="radio" name="f01-limitacao"/><span>Ficar em pé &gt;30 min</span></label>
-          <label class="r-item"><input type="radio" name="f01-limitacao"/><span>Outra</span></label>
+        <div class="radio-group row-group" id="f01-limitacao-group">
+          <label class="c-item"><input type="checkbox" name="f01-limitacao" value="Nenhuma"/><span>Nenhuma</span></label>
+          <label class="c-item"><input type="checkbox" name="f01-limitacao" value="Caminhada >10 min"/><span>Caminhada &gt;10 min</span></label>
+          <label class="c-item"><input type="checkbox" name="f01-limitacao" value="Ficar em pé >30 min"/><span>Ficar em pé &gt;30 min</span></label>
+          <label class="c-item"><input type="checkbox" id="f01-limitacao-outra-check" name="f01-limitacao" value="Outra"/><span>Outra</span></label>
+          <input type="text" id="f01-limitacao-outra-text" placeholder="Especifique qual" style="display:none; font-family: var(--mono); font-size:.85rem; border:none; border-bottom:1.5px solid var(--border); background:transparent; outline:none; padding:.1rem .2rem .25rem; color:var(--ink); min-width:180px;"/>
         </div>
       </div>
     </div>
@@ -1187,6 +1206,20 @@
       <div class="img-preview-actions" id="img-preview-actions">
         <span class="img-preview-name" id="img-preview-name"></span>
         <button class="img-remove-btn" id="img-remove-btn">Remover</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SITUAÇÃO DO PARTICIPANTE -->
+  <div class="section-card">
+    <div class="section-header"><div class="section-pip"></div><span class="section-label">Situação do Participante</span></div>
+    <div class="section-body">
+      <div class="row" style="grid-template-columns: 1fr; gap: .75rem;">
+        <div class="row-name">Participante excluído do estudo?</div>
+        <div class="radio-group row-group">
+          <label class="r-item"><input type="radio" name="f01-excluido"/><span>Sim</span></label>
+          <label class="r-item"><input type="radio" name="f01-excluido"/><span>Não</span></label>
+        </div>
       </div>
     </div>
   </div>
@@ -1384,7 +1417,7 @@
     <div class="section-body">
       <div class="row two-col"><div class="row-name">Eixo Femoral</div><div class="radio-group row-group"><label class="r-item"><input type="radio" name="f03-efem"/><span>Normal</span></label><label class="r-item"><input type="radio" name="f03-efem"/><span>Refluxo</span></label><label class="r-item"><input type="radio" name="f03-efem"/><span>Ausente</span></label><label class="r-item"><input type="radio" name="f03-efem"/><span>Obstruído</span></label></div></div>
       <div class="row two-col"><div class="row-name">Eixo Poplíteo</div><div class="radio-group row-group"><label class="r-item"><input type="radio" name="f03-epop"/><span>Normal</span></label><label class="r-item"><input type="radio" name="f03-epop"/><span>Refluxo</span></label><label class="r-item"><input type="radio" name="f03-epop"/><span>Ausente</span></label><label class="r-item"><input type="radio" name="f03-epop"/><span>Obstruído</span></label></div></div>
-      <div class="row two-col"><div class="row-name">Veias</div><div class="radio-group row-group"><label class="r-item"><input type="radio" name="f03-veias"/><span>Normal</span></label><label class="r-item"><input type="radio" name="f03-veias"/><span>Refluxo</span></label><label class="r-item"><input type="radio" name="f03-veias"/><span>Ausente</span></label><label class="r-item"><input type="radio" name="f03-veias"/><span>Obstruída</span></label></div></div>
+      <div class="row two-col"><div class="row-name">Veias Infrapatelares</div><div class="radio-group row-group"><label class="r-item"><input type="radio" name="f03-veias"/><span>Normal</span></label><label class="r-item"><input type="radio" name="f03-veias"/><span>Refluxo</span></label><label class="r-item"><input type="radio" name="f03-veias"/><span>Ausente</span></label><label class="r-item"><input type="radio" name="f03-veias"/><span>Obstruída</span></label></div></div>
       <div class="row two-col"><div class="row-name">Perfurantes insuf. coxa <span class="sub">&gt; 3 mm</span></div><div class="radio-group row-group"><label class="r-item"><input type="radio" name="f03-perf_coxa"/><span>Presente</span></label><label class="r-item"><input type="radio" name="f03-perf_coxa"/><span>Ausente</span></label></div></div>
       <div class="row two-col"><div class="row-name">Perfurantes insuf. perna <span class="sub">&gt; 3 mm</span></div><div class="radio-group row-group"><label class="r-item"><input type="radio" name="f03-perf_perna"/><span>Presente</span></label><label class="r-item"><input type="radio" name="f03-perf_perna"/><span>Ausente</span></label></div></div>
       <div class="row two-col"><div class="row-name">Comprometimento ilíaco-femoral / pélvico</div><div class="radio-group row-group"><label class="r-item"><input type="radio" name="f03-iliaco"/><span>Presente</span></label><label class="r-item"><input type="radio" name="f03-iliaco"/><span>Ausente</span></label></div></div>
@@ -1401,7 +1434,7 @@
 </div><!-- /#f03 -->
 
 <script>
-  console.log('%c CT Vascular UERJ — versão 2026-06-28-r3 (código participante F01 corrigido) ', 'background:#0C2D6B;color:#fff;padding:4px;');
+  console.log('%c CT Vascular UERJ — versão 2026-07-04-r4 (exclusão, marcar-tudo, limitação multi-select, técnico fixo, veias infrapatelares) ', 'background:#0C2D6B;color:#fff;padding:4px;');
   const SENHA = 'projetope';
   let currentResearcher = '';
 
@@ -1475,10 +1508,46 @@
   }
 
   function propagateResearcher() {
-    ['f01-researcher','f02-researcher','f02-tecnico','f03-researcher'].forEach(id => {
+    ['f01-researcher','f02-researcher','f03-researcher'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.value = currentResearcher;
     });
+    // Técnico D-PPG é fixo, independente do pesquisador logado
+    const tecnico = document.getElementById('f02-tecnico');
+    if (tecnico) tecnico.value = 'Iasmim Bento';
+  }
+
+  /* ── Marcar tudo (Inclusão / Exclusão) ── */
+  function selectAllRadios(names, targetLabel) {
+    names.forEach(name => {
+      const radios = document.querySelectorAll('input[name="' + name + '"]');
+      radios.forEach(r => {
+        const span = r.parentElement.querySelector('span');
+        if (span && span.textContent.trim() === targetLabel) {
+          r.checked = true;
+        }
+      });
+    });
+  }
+
+  /* ── Limitação funcional: mostrar campo "Outra" ── */
+  const limitacaoOutraCheck = document.getElementById('f01-limitacao-outra-check');
+  const limitacaoOutraText  = document.getElementById('f01-limitacao-outra-text');
+  if (limitacaoOutraCheck) {
+    limitacaoOutraCheck.addEventListener('change', function() {
+      limitacaoOutraText.style.display = this.checked ? 'inline-block' : 'none';
+      if (!this.checked) limitacaoOutraText.value = '';
+    });
+  }
+  function getLimitacao() {
+    const checks = document.querySelectorAll('input[name="f01-limitacao"]:checked');
+    let vals = Array.from(checks).map(c => c.value);
+    const outraIdx = vals.indexOf('Outra');
+    if (outraIdx !== -1) {
+      const outraText = limitacaoOutraText ? limitacaoOutraText.value.trim() : '';
+      vals[outraIdx] = 'Outra' + (outraText ? ': ' + outraText : '');
+    }
+    return vals.join(', ');
   }
 
   /* ── FICHA 01: IMC automático ── */
@@ -1707,13 +1776,15 @@
       vcss_total: getVal('f01-vcss-total'),
       // Sintomas
       eva: evaInputEl ? evaInputEl.value.trim() : '',
-      limitacao: getRadio('f01-limitacao'),
+      limitacao: getLimitacao(),
       // Pé / tornozelo
       arco: getRadio('f01-arco'),
       dorsiflexao: peNumberInputs[0] ? peNumberInputs[0].value.trim() : '',
       flexao_plantar: peNumberInputs[1] ? peNumberInputs[1].value.trim() : '',
       mobilidade_total: peNumberInputs[2] ? peNumberInputs[2].value.trim() : '',
       rigidez: getRadio('f01-rigidez'),
+      // Situação do participante
+      excluido: getRadio('f01-excluido'),
     };
   }
 
